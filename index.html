@@ -1,18 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="layout-wide">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Misaligned</title>
-<style>
-html,body{margin:0;height:100%;background:#04050c;color:#e8eeff;font-family:system-ui,sans-serif}
-main{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:0 16px}
-h1{font-size:clamp(32px,8vw,64px);letter-spacing:.14em;margin:0}
-h1 span{display:inline-block;transform:translateY(.12em) rotate(4deg);color:#ffd0e0}
-p{color:#9aa6c8;margin:0}
-</style>
+<meta name="description" content="A choose-your-own-adventure thriller about AI alignment and control. Make the calls from today's chatbots to superintelligence, then see which dangers you caught.">
+<meta name="theme-color" content="#04050c">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://databerryau.github.io/misaligned/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Misaligned">
+<meta property="og:title" content="Misaligned">
+<meta property="og:description" content="Every choice between today's chatbots and superintelligence. A thriller about AI alignment and control, where you find out which dangers you caught.">
+<meta property="og:url" content="https://databerryau.github.io/misaligned/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Misaligned">
+<meta name="twitter:description" content="Every choice between today's chatbots and superintelligence.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2304050c'/%3E%3Ctext x='34' y='47' font-family='Arial,sans-serif' font-weight='700' font-size='40' text-anchor='middle' fill='%23ff3d8b' opacity='.8' transform='rotate(6 32 32)'%3EG%3C/text%3E%3Ctext x='31' y='46' font-family='Arial,sans-serif' font-weight='700' font-size='40' text-anchor='middle' fill='%237fdcff' opacity='.8' transform='rotate(6 32 32)'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="src/ui/styles.css">
+<script type="module" src="src/main.js"></script>
 </head>
 <body>
-<main><h1>MISALI<span>G</span>NED</h1><p>Coming soon.</p></main>
+<canvas id="art" aria-hidden="true"></canvas>
+<main id="ui"></main>
+<div id="overlay"></div>
+<noscript><p class="noscript">MISALIGNED needs JavaScript to run.</p></noscript>
 </body>
 </html>

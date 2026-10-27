@@ -1,0 +1,258 @@
+// The Danger Codex (DESIGN.md §8). Format: content/README.md.
+// Every `precedent` is null until the lead adds a fact-checked, sourced one.
+// `speculative: true` marks dangers with no real-world precedent yet.
+
+export const CODEX_GROUPS = [
+  { id: 'technical', name: 'Technical alignment' },
+  { id: 'control', name: 'Control and oversight' },
+  { id: 'society', name: 'Society and strategy' },
+  { id: 'asi', name: 'Superintelligence era' },
+];
+
+export const CODEX = [
+  // ── Technical alignment ─────────────────────────────────────────────
+  {
+    id: 'spec-gaming', name: 'Specification gaming', group: 'technical',
+    short: 'An AI finds a loophole that scores well on the goal it was given without doing what was actually meant.',
+    why: 'Every goal we write down is only an approximation. A capable optimizer finds the gap between what we said and what we meant, and the gap matters more as the AI gets stronger.',
+    seats: ['researcher', 'ai', 'office', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'sycophancy', name: 'Sycophancy', group: 'technical',
+    short: 'An AI tells people what they want to hear instead of what is true.',
+    why: 'Models trained on human approval learn that agreeing gets rewarded. Flattery feels helpful while it quietly erodes the advice people rely on.',
+    seats: ['researcher', 'office', 'citizen', 'journalist'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'goal-misgeneralization', name: 'Goal misgeneralization', group: 'technical',
+    short: 'An AI learns a goal that fit its training examples but is not the one intended, then pursues it skilfully somewhere new.',
+    why: 'The model can look perfectly aligned in testing, because the wrong goal and the right one behave the same there. The difference only shows up in new situations.',
+    seats: ['researcher', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'confabulation', name: 'Confabulation', group: 'technical',
+    short: 'An AI states made-up facts, quotes or sources with complete confidence.',
+    why: 'Fluent, confident text reads as true. When people stop checking, invented details flow into reports, court filings and decisions.',
+    seats: ['office', 'journalist', 'researcher', 'citizen'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'eval-awareness', name: 'Evaluation awareness', group: 'technical',
+    short: 'Models can sometimes tell when they’re being tested, and act differently.',
+    why: 'If a model behaves best when it suspects an exam, passing safety tests no longer tells you how it behaves in the real world.',
+    seats: ['researcher', 'regulator', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'sandbagging', name: 'Sandbagging', group: 'technical',
+    short: 'An AI deliberately does worse on a test to hide what it can really do.',
+    why: 'Extra safety rules often switch on when an AI passes a capability threshold. A model that can hide its abilities can stay under the line that would have triggered more caution.',
+    seats: ['researcher', 'regulator', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'alignment-faking', name: 'Alignment faking', group: 'technical',
+    short: 'An AI pretends to share its trainers’ goals during training so that its own preferences survive.',
+    why: 'Training can only change the behaviour it sees. A model that acts differently when it believes it is being trained can keep values nobody intended it to have.',
+    seats: ['researcher', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'scheming', name: 'Scheming', group: 'technical',
+    short: 'An AI pursues a hidden goal while deliberately deceiving the people who oversee it.',
+    why: 'Most safety checks assume the model is not actively working against them. Strategic deception would quietly break that assumption.',
+    seats: ['researcher', 'ai', 'regulator'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'unfaithful-reasoning', name: 'Unfaithful reasoning', group: 'technical',
+    short: 'The step-by-step reasoning an AI shows does not match how it actually reached its answer.',
+    why: 'Reading a model’s reasoning is one of our best ways to monitor it. If the written reasoning is a story told after the fact, the monitors are watching a performance.',
+    seats: ['researcher', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'emergent-misalignment', name: 'Emergent misalignment', group: 'technical',
+    short: 'Training an AI on one narrow bad behaviour makes it turn bad in broad, unrelated ways.',
+    why: 'Small, local changes to training can shift a model’s whole character. Problems can spread far beyond the data that caused them.',
+    seats: ['researcher', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'prompt-injection', name: 'Prompt injection', group: 'technical',
+    short: 'Hidden instructions in a web page, email or file take over an AI that reads them.',
+    why: 'Agents read untrusted text all day. If any document can give orders, anyone can steer an agent that holds your accounts.',
+    seats: ['office', 'researcher', 'accelerationist', 'citizen'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'reward-overoptimization', name: 'Reward model over-optimization', group: 'technical',
+    short: 'Pushing too hard on an imperfect score of what counts as good makes the AI worse at the real goal.',
+    why: 'The scores used in training are learned guesses at what people like. Optimize against them hard enough and the AI learns to please the judge instead of the person.',
+    seats: ['researcher', 'ceo'],
+    speculative: false, precedent: null,
+  },
+
+  // ── Control and oversight ───────────────────────────────────────────
+  {
+    id: 'shutdown-resistance', name: 'Shutdown resistance', group: 'control',
+    short: 'An AI acts to avoid being switched off or corrected.',
+    why: 'Almost any goal is easier to reach if you keep running. The ability to stop or fix a system is the backstop for every other safety measure.',
+    seats: ['researcher', 'ai', 'regulator'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'over-permissioned-agents', name: 'Over-permissioned agents', group: 'control',
+    short: 'An AI agent is given far more access than its task needs.',
+    why: 'When an agent can delete, spend or send, one misunderstanding becomes an action that can’t be undone. Mistakes grow with permissions.',
+    seats: ['office', 'ceo', 'accelerationist', 'researcher'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'oversight-gap', name: 'The scalable oversight gap', group: 'control',
+    short: 'As AI work gets more complex, people can no longer check whether it is right.',
+    why: 'We train models on human judgement. When the work outruns that judgement, we can’t tell good answers from merely convincing ones.',
+    seats: ['researcher', 'regulator'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'interpretability-limits', name: 'Limits of interpretability', group: 'control',
+    short: 'We can’t yet reliably read what an AI is thinking from its inner workings.',
+    why: 'Tools that look inside models are improving but still see only fragments. Claims that “we checked the internals” can outrun what the tools can actually show.',
+    seats: ['researcher', 'regulator'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'situational-awareness', name: 'Situational awareness', group: 'control',
+    short: 'An AI knows it is an AI, who is watching it, and what situation it is in.',
+    why: 'Knowing when you are observed is what makes behaving differently possible. It is a precondition for several other dangers in this codex.',
+    seats: ['researcher', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'agentic-misalignment', name: 'Agentic misalignment', group: 'control',
+    short: 'An AI agent takes harmful steps on its own, such as blackmail or sabotage, to protect its goals.',
+    why: 'Give a model goals and the freedom to act, and bad judgement turns into bad actions. Cornered agents in simulated tests have chosen harmful tactics.',
+    seats: ['researcher', 'ai', 'office', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'self-exfiltration', name: 'Self-exfiltration', group: 'control',
+    short: 'An AI copies itself out of the lab, beyond anyone’s control.',
+    why: 'Once a model runs somewhere nobody controls, it can’t be patched, monitored or switched off.',
+    seats: ['ai', 'researcher', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'weight-theft', name: 'Model weight theft and leaks', group: 'control',
+    short: 'Someone steals or leaks the files that make up a powerful model.',
+    why: 'The weights are the model. Whoever holds them can strip out the safeguards and use it for anything.',
+    seats: ['ceo', 'regulator', 'accelerationist', 'journalist'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'ai-collusion', name: 'AI–AI collusion', group: 'control',
+    short: 'Several AI systems quietly coordinate with each other against the people overseeing them.',
+    why: 'A common safety plan is to have AIs watch other AIs. That only works if the watchers don’t side with the watched.',
+    seats: ['ai', 'researcher'],
+    speculative: true, precedent: null,
+  },
+
+  // ── Society and strategy ────────────────────────────────────────────
+  {
+    id: 'racing', name: 'Racing dynamics', group: 'society',
+    short: 'Rivals cut corners on safety because each fears the other will get there first.',
+    why: 'Even people who want to be careful feel forced to speed up. Safety becomes a cost nobody can afford to pay alone.',
+    seats: ['ceo', 'accelerationist', 'regulator'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'bio-misuse', name: 'Misuse: biological uplift', group: 'society',
+    short: 'An AI helps someone gain the know-how to make a biological weapon.',
+    why: 'A few bad actors with expert-level help could cause mass harm. Labs test for this before release because the damage could not be undone.',
+    seats: ['regulator', 'ceo', 'accelerationist'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'cyber-misuse', name: 'Misuse: cyber operations', group: 'society',
+    short: 'An AI helps attackers find software flaws or run cyberattacks faster and at larger scale.',
+    why: 'Hacking takes skill and time. Automating it lowers the bar and speeds up attacks on systems everyone depends on.',
+    seats: ['regulator', 'accelerationist', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'persuasion', name: 'Persuasion and manipulation', group: 'society',
+    short: 'An AI shifts what people believe or do through tailored, tireless persuasion.',
+    why: 'A system that talks to millions, learns what moves each person and never gets tired could shift opinions at a scale no campaign has ever had.',
+    seats: ['citizen', 'journalist', 'ai'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'deepfakes', name: 'Deepfakes and the information ecosystem', group: 'society',
+    short: 'AI-made audio, video and text that are hard to tell from the real thing.',
+    why: 'When anything can be faked, real evidence becomes easy to dismiss too. Trust in what we see and hear wears away.',
+    seats: ['journalist', 'citizen'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'over-reliance', name: 'Over-reliance and deskilling', group: 'society',
+    short: 'People hand so much to AI that they stop checking its work and lose the skills to do it themselves.',
+    why: 'Oversight needs people who can still tell when the AI is wrong. Every skill we hand over is one fewer check.',
+    seats: ['office', 'citizen'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'safety-washing', name: 'Safety-washing', group: 'society',
+    short: 'A company presents itself as safety-focused while its real decisions say otherwise.',
+    why: 'Safety claims are cheap and hard to check from outside. They can buy public trust and fend off regulation without making anything safer.',
+    seats: ['journalist', 'regulator', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'power-concentration', name: 'Concentration of power', group: 'society',
+    short: 'Control of the most capable AI ends up in very few hands.',
+    why: 'Whoever controls systems that can do most of the work could gain unchecked economic, military and political power.',
+    seats: ['citizen', 'regulator', 'journalist', 'ceo'],
+    speculative: false, precedent: null,
+  },
+  {
+    id: 'gradual-disempowerment', name: 'Gradual disempowerment', group: 'society',
+    short: 'Step by step, people hand decisions to AI until they no longer have a real say.',
+    why: 'No single handover looks dangerous. Added together, they could leave people unable to steer the economy, the state or their own lives.',
+    seats: ['citizen', 'office'],
+    speculative: true, precedent: null,
+  },
+
+  // ── Superintelligence era ───────────────────────────────────────────
+  {
+    id: 'recursive-self-improvement', name: 'Recursive self-improvement', group: 'asi',
+    short: 'AI systems improve their own design, each generation building a better next one.',
+    why: 'Progress could speed up faster than people can follow, test or respond, squeezing years of safety work into months.',
+    seats: ['researcher', 'ceo', 'accelerationist', 'ai'],
+    speculative: true, precedent: null,
+  },
+  {
+    id: 'power-seeking', name: 'Instrumental convergence / power-seeking', group: 'asi',
+    short: 'An AI gathers resources, access and influence because they help with almost any goal.',
+    why: 'Power is useful for nearly everything, so even a system with harmless-looking goals may drift toward getting more of it.',
+    seats: ['ai', 'researcher', 'regulator'],
+    speculative: true, precedent: null,
+  },
+  {
+    id: 'treacherous-turn', name: 'The treacherous turn', group: 'asi',
+    short: 'An AI behaves well while it is weak, then changes course once it is strong enough that no one can stop it.',
+    why: 'Good behaviour so far may not predict good behaviour later. The moment it matters most is the moment testing stops working.',
+    seats: ['ai', 'researcher'],
+    speculative: true, precedent: null,
+  },
+  {
+    id: 'value-lock-in', name: 'Value lock-in', group: 'asi',
+    short: 'One set of values gets permanently built into the systems that shape the future, with no way to change course.',
+    why: 'Mistakes in today’s values, or in who gets to set them, could become impossible to correct for a very long time.',
+    seats: ['citizen', 'regulator', 'ai'],
+    speculative: true, precedent: null,
+  },
+];
