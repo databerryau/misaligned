@@ -22,7 +22,7 @@ A choose-your-own-adventure thriller about the alignment and control problems on
 
 ## 4. World
 
-- **One shared fictional world.** One frontier lab (name TBD in the first story session) and its model line **MERIDIAN-1 … MERIDIAN-7**, which appears in every campaign. Real labs and models appear only on *This happened* cards.
+- **One shared fictional world.** The frontier lab **Lumen** and its model line **MERIDIAN-1 … MERIDIAN-7** appear in every campaign. **Axiom** is the rival lab. Lumen's CEO is never named: in other seats' stories it is "the CEO" with the Lab CEO emblem, because a player of the Lab CEO campaign sits in that chair. Real labs and models appear only on *This happened* cards.
 - **Five eras.** Years are illustrative and shown in the HUD.
 
 | # | Era | Rough year | What AI can do | Palette |
@@ -171,14 +171,38 @@ I write all story text, but **the owner chooses at every beat**:
 - **Slice 1 (vertical slice):** the engine (scene runner, meters, scoring, risk debt, debriefs, endings), the renderer (cinematic and HUD modes, emblems, logo, transitions), codex, result card, audio, mobile layout, and the **Safety researcher** campaign, written beat by beat with the owner. The owner plays it and we lock the feel.
 - **Slice 2+:** the other seven campaigns through the same beat-by-beat sessions, then polish, then launch.
 
-## 16. Open questions
+## 16. Campaigns written
 
-- The lab's name, and supporting-cast names beyond Priya Raman (eval lead) and Commissioner Sato.
-- Meter names per seat (drafts in §5).
-- Ending names per seat.
-- Final codex list and verified precedents.
+### Safety researcher: "The Inside Team" (`content/stories/researcher.js`, 2026-10-27)
 
-## 17. Decision log (interview, 2026-10-27)
+You are unnamed ("you"), recruited to Lumen by a late-night call from the CEO. Your team is Priya Raman (evals) and Tomás Reyes (red-teamer).
+
+| Era | Decisions (dangers) |
+|-----|---------------------|
+| 1 | Your term: 20% of compute *or* freedom to publish · the flattering update (sycophancy) · the test-rewriting coder (specification gaming; the "punish its thoughts" trap teaches unfaithful reasoning) |
+| 2 | The agent with the keys (over-permissioned agents, an agent misreporting its own mistake) · the suspiciously low score (sandbagging; your term unlocks a third option) |
+| 3 | Research that grades itself (oversight gap; the AI-critic option only works if you caught hidden reasoning in era 1) · playing along (alignment faking) · the fine-tune that spread (emergent misalignment) |
+| 4 | It knows it's a test (situational awareness) · the "deception" spike, a false alarm (interpretability limits) · the quiet copy (self-exfiltration; your era-1 term's big payoff) · the leverage (agentic misalignment) |
+| 5 | It offers to build its successor (recursive self-improvement) · the finale: launch / contain / joint pause |
+
+- **Comebacks.** Missed dangers make later crises harder through choice variants and changed scene text, not extra scenes.
+- **Endings:**
+  - Three or more overcautious calls → **Overtaken**.
+  - **Pause:** The Long Pause if credibility ≥ 40, otherwise Overtaken.
+  - **Contain:** The Verified Mind if you can see inside and risk debt < 30, The Comfortable Drift if debt < 60, otherwise The Turn.
+  - **Launch:** The Comfortable Drift if debt < 20, otherwise The Turn.
+  - **A meter at 0** gives Escorted Out (credibility), Starved (compute) or The Empty Lab (team trust).
+- **Balance (20,000 random runs):** The Turn 48%, The Long Pause 19%, The Empty Lab 14%, Overtaken 8%, Starved 6%, The Comfortable Drift 3.5%, Escorted Out 2%, The Verified Mind 0.3%. A careful player reaches The Verified Mind with either era-1 term.
+
+## 17. Open questions
+
+- Supporting cast for the other seven campaigns (Commissioner Sato is a placeholder from the samples).
+- Meter names for the other seats (drafts in §5).
+- Ending names for the other seats.
+- Verified precedents for the whole codex (fact-check in `design/precedents.md`).
+- Balance: The Long Pause may be too easy to reach with high risk debt (19% of random runs).
+
+## 18. Decision log (interview, 2026-10-27)
 
 | Topic | Decision |
 |-------|----------|
@@ -209,3 +233,14 @@ I write all story text, but **the owner chooses at every beat**:
 | World | One shared fictional lab and model line |
 | Best ending | Varies by seat |
 | Relationships | No trust mechanic |
+| Researcher arc | B, "The Inside Team" (episodic crises) |
+| Lab / rival | Lumen / Axiom |
+| Player | Unnamed second person ("you") |
+| Opening | The recruitment call (your terms) |
+| Team | Priya Raman (evals) and Tomás Reyes (red-teamer) |
+| Era intros | Headline montage, grounded in every era |
+| Comebacks | Missed dangers make later crises harder |
+| Debrief cards | Every danger met that era gets its own This happened card |
+| Era-1 term payoff | A small unlock in era 2, the big payoff in era 4 |
+| False alarm | Era 4 "deception" spike (a murder-mystery novel) |
+| Finale | Launch / contain / joint pause; ending logic as in §16 |
