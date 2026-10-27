@@ -42,6 +42,7 @@ export function menuOverlay(app, _props, close) {
   };
   const items = [
     item('codex', 'Danger Codex', () => app.openOverlay('codex')),
+    item('caught', 'How this works', () => app.openOverlay('howto')),
     item('settings', 'Settings', () => app.openOverlay('settings')),
     app.screenName !== 'select' ? item('seats', inRun ? 'Leave run · choose a seat' : 'Choose a seat', leave(() => { app.game = null; app.show('select'); })) : null,
     app.screenName !== 'title' ? item('back', inRun ? 'Leave run · title' : 'Title screen', leave(() => app.quit())) : null,

@@ -1,10 +1,16 @@
-// Procedural WebAudio (no files): an ambient drone that darkens each era, soft
-// UI clicks, a choice confirm, an alert sting for the "AI looks back" beat,
-// debrief reveal chimes and an ending chord. Starts on the first user gesture.
+// Procedural WebAudio (no files). Deliberately quiet and sparse (owner feedback
+// 2026-10-27: "much more infrequent and background"): a soft hum that darkens
+// each era, plus a handful of gentle one-shots (choice, era change, the AI
+// looking back, debrief, ending). Buttons don't click. Starts on the first user gesture.
+
+const MASTER = 0.35;       // overall level
+const DRONE = 0.018;       // background hum
+const AIR = 0.004;         // breath of noise under the hum
+const ALARM_GAP = 20;      // seconds: the "AI looks back" sting plays at most this often
 
 const ERA_ROOT = [110, 98, 87.31, 77.78, 65.41]; // A2 → C2: lower every era
 const ERA_CUTOFF = [520, 440, 380, 320, 280];
-const ERA_TENSION = [0, 0.15, 0.35, 0.55, 0.75]; // a tritone creeps in
+const ERA_TENSION = [0, 0.08, 0.16, 0.24, 0.32]; // a tritone creeps in, quietly
 
 export class AudioEngine {
   constructor({ muted = false } = {}) {
@@ -27,10 +33,10 @@ export class AudioEngine {
     comp.threshold.value = -18;
     comp.connect(ctx.destination);
     this.master = ctx.createGain();
-    this.master.gain.value = this.muted ? 0 : 0.9;
+    this.master.gain.value = this.muted ? 0 : MASTER;
     this.master.connect(comp);
     this.sfx = ctx.createGain();
-    this.sfx.gain.value = 0.6;
+    this.sfx.gain.value = 0.4;
     this.sfx.connect(this.master);
     this.startDrone();
   }
@@ -40,7 +46,7 @@ export class AudioEngine {
 
   setMuted(m) {
     this.muted = !!m;
-    if (this.master) this.master.gain.setTargetAtTime(this.muted ? 0 : 0.9, this.ctx.currentTime, 0.08);
+    if (this.master) this.master.gain.setTargetAtTime(this.muted ? 0 : MASTER, this.ctx.currentTime, 0.08);
   }
 
   get now() { return this.ctx.currentTime; }
@@ -49,7 +55,7 @@ export class AudioEngine {
     const ctx = this.ctx;
     const out = ctx.createGain();
     out.gain.value = 0;
-    out.gain.setTargetAtTime(0.055, ctx.currentTime, 2.5);
+    out.gain.setTargetAtTime(DRONE, ctx.currentTime, 6);
     out.connect(this.master);
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
@@ -59,7 +65,7 @@ export class AudioEngine {
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.frequency.value = 0.07;
-    lfoGain.gain.value = 120;
+    lfoGain.gain.value = 60;
     lfo.connect(lfoGain).connect(filter.frequency);
     lfo.start();
 
@@ -73,7 +79,7 @@ export class AudioEngine {
       o.start();
       return { o, g, ratio };
     };
-    this.voices = [voice('sawtooth', 1, 0.35), voice('sawtooth', 1.006, 0.3), voice('sine', 0.5, 0.9), voice('triangle', 1.5, 0.12)];
+    this.voices = [voice('triangle', 1, 0.3), voice('sine', 1.006, 0.25), voice('sine', 0.5, 0.9), voice('sine', 1.5, 0.08)];
     this.tension = voice('sine', Math.SQRT2, 0);
     this.filter = filter;
 
@@ -90,7 +96,7 @@ export class AudioEngine {
     bp.frequency.value = 600;
     bp.Q.value = 0.5;
     const ng = ctx.createGain();
-    ng.gain.value = 0.012;
+    ng.gain.value = AIR;
     const wob = ctx.createOscillator();
     const wobGain = ctx.createGain();
     wob.frequency.value = 0.05;
@@ -153,31 +159,29 @@ export class AudioEngine {
     src.stop(t + dur + 0.05);
   }
 
-  click() { this.tone(1800, { to: 1200, decay: 0.045, gain: 0.035 }); }
+  /** Buttons are silent; kept so callers don't need to change. */
+  click() {}
 
-  confirm() {
-    this.tone(660, { decay: 0.22, gain: 0.05 });
-    this.tone(990, { at: 0.07, decay: 0.3, gain: 0.045 });
-  }
+  /** Choosing an option: one soft note. */
+  confirm() { this.tone(660, { attack: 0.02, decay: 0.5, gain: 0.018 }); }
 
   /** The AI looks back. */
   alarm() {
-    this.tone(72, { to: 38, attack: 0.02, decay: 1.4, gain: 0.3 });
-    [220, 233.1, 311.1].forEach((f, i) => this.tone(f, { type: 'sawtooth', at: 0.05, attack: 0.5, decay: 1.2, gain: 0.025 + i * 0.004 }));
-    this.tone(1760, { at: 0.02, decay: 0.6, gain: 0.03 });
-    this.noiseBurst({ dur: 1.0, from: 3000, to: 300, gain: 0.05 });
+    if (!this.ctx || this.now - (this.lastAlarm ?? -Infinity) < ALARM_GAP) return;
+    this.lastAlarm = this.now;
+    this.tone(70, { to: 52, attack: 0.6, decay: 2.2, gain: 0.07 });
+    this.tone(207.65, { attack: 0.8, decay: 1.8, gain: 0.01 });
+    this.noiseBurst({ dur: 2.0, from: 900, to: 250, gain: 0.01 });
   }
 
   /** Debrief rows: rising chimes. */
   reveal(i = 0, good = true) {
-    const scale = good ? [523.25, 659.25, 783.99, 987.77, 1046.5] : [440, 415.3, 392, 369.99, 349.23];
-    const f = scale[i % scale.length];
-    this.tone(f, { decay: 0.9, gain: 0.04 });
-    this.tone(f * 2.76, { decay: 0.35, gain: 0.008 });
+    if (i !== 0) return; // one quiet chime per debrief, not one per row
+    this.tone(good ? 523.25 : 440, { attack: 0.02, decay: 1.2, gain: 0.015 });
   }
 
   /** Era transition. */
-  whoosh() { this.noiseBurst({ dur: 1.1, from: 180, to: 2400, gain: 0.07, q: 0.8 }); }
+  whoosh() { this.noiseBurst({ dur: 1.6, from: 180, to: 1400, gain: 0.015, q: 0.8 }); }
 
   ending(tone) {
     const chords = {
@@ -185,6 +189,6 @@ export class AudioEngine {
       mixed: [261.63, 349.23, 392, 466.16],
       bad: [130.81, 155.56, 185, 246.94],
     };
-    (chords[tone] || chords.mixed).forEach((f, i) => this.tone(f, { type: 'triangle', at: i * 0.12, attack: 1.2, decay: 3.5, gain: 0.03 }));
+    (chords[tone] || chords.mixed).forEach((f, i) => this.tone(f, { type: 'sine', at: i * 0.12, attack: 1.5, decay: 3.5, gain: 0.012 }));
   }
 }

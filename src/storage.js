@@ -2,7 +2,7 @@
 // private windows and blocked storage simply fall back to memory.
 
 const KEY = 'misaligned.v1';
-const blank = () => ({ discovered: [], best: {}, endings: {}, muted: false });
+const blank = () => ({ discovered: [], best: {}, endings: {}, muted: false, howto: false });
 
 function read() {
   try {
@@ -14,6 +14,7 @@ function read() {
       best: data.best && typeof data.best === 'object' ? data.best : {},
       endings: data.endings && typeof data.endings === 'object' ? data.endings : {},
       muted: !!data.muted,
+      howto: !!data.howto,
     };
   } catch {
     return blank();
@@ -33,6 +34,10 @@ export function createStore({ revealAll = null } = {}) {
   return {
     get muted() { return data.muted; },
     setMuted(m) { data.muted = !!m; save(); },
+
+    /** Whether the player has seen the "How this works" card. */
+    get howtoSeen() { return data.howto; },
+    setHowtoSeen() { if (!data.howto) { data.howto = true; save(); } },
 
     /** Set of discovered codex ids. */
     discovered() { return new Set(revealAll || data.discovered); },

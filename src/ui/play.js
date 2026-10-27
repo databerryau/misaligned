@@ -162,7 +162,14 @@ export function playScreen(app, { game, step }) {
       h('li', { style: { '--i': k } },
         h('button', { class: 'choice', type: 'button', onClick: () => choose(index, k) },
           h('span', { class: 'num', text: String(k + 1) }),
-          h('span', { class: 'label', text: choice.label }))))));
+          h('span', { class: 'c-body' },
+            h('span', { class: 'label', text: choice.label }),
+            choice.hint ? h('span', { class: 'hint', text: choice.hint }) : null))))));
+    // A first-time player gets the rules card before their first decision.
+    if (!auto && !app.frozen && app.params.pick == null && !app.store.howtoSeen) {
+      app.store.setHowtoSeen();
+      app.openOverlay('howto', { seat: game.seat });
+    }
     if (auto) {
       const n = game.autoN || 0;
       game.autoN = n + 1;

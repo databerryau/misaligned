@@ -137,9 +137,10 @@ test('flags a branch whose last route has a condition', () => {
 });
 
 test('a debrief citing an entry without a precedent warns, and errors in strict mode', () => {
-  const res = validateStory(base(), ctx);
+  const cites = () => { const s = base(); s.scenes.d1.happened = 'treacherous-turn'; return s; }; // speculative: no precedent
+  const res = validateStory(cites(), ctx);
   assert.ok(res.warnings.some((w) => /no precedent/.test(w)));
-  assert.ok(errorsOf(base(), { strict: true }).some((e) => /no precedent/.test(e)));
+  assert.ok(errorsOf(cites(), { strict: true }).some((e) => /no precedent/.test(e)));
 });
 
 test('meterZero endings are reachable through the search', () => {

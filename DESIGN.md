@@ -146,7 +146,19 @@ Reference: [design/misaligned-look-samples.pdf](design/misaligned-look-samples.p
 
 ## 12. Audio
 
-Procedural WebAudio with no audio files: an ambient drone that darkens each era, soft UI clicks, alert stings, and a debrief reveal sound. Mute toggle.
+Procedural WebAudio with no audio files, kept **quiet and sparse** (owner, 2026-10-27: "much more infrequent and background"):
+- a soft hum that darkens each era;
+- one soft note when you choose;
+- a low swell when the AI looks back, at most once every 20 seconds;
+- a quiet era-change breath, one debrief chime, and an ending chord.
+
+Buttons are silent. Mute toggle.
+
+## 12a. Onboarding (owner feedback, 2026-10-27: the first decision was "completely inscrutable")
+
+- **Prologue.** Every campaign opens with a short prologue (2–4 beats) that sets up the world, who you are, and what's at stake before the first decision.
+- **Choice hints.** Every choice carries a one-line `hint` saying what it means or costs, never whether it's right.
+- **Rules card.** A "How this works" card appears before the first decision of a player's first run. It covers decisions and eras, catching dangers, risk debt, overcaution, the codex, and the seat's three meters (from each meter's `desc`). It's also reachable from the menu.
 
 ## 13. Tech and hosting
 

@@ -10,6 +10,7 @@ import { endingScreen } from './ending.js';
 import { cardScreen } from './card.js';
 import { codexOverlay } from './codex.js';
 import { settingsOverlay, menuOverlay } from './settings.js';
+import { howtoOverlay } from './howto.js';
 import { showEraCard } from './era.js';
 import { Game } from '../game.js';
 import { loadStory } from '../content.js';
@@ -17,7 +18,7 @@ import { fakeRun } from '../debug.js';
 import { isDebug } from '../params.js';
 
 const SCREENS = { title: titleScreen, select: selectScreen, play: playScreen, debrief: debriefScreen, ending: endingScreen, card: cardScreen };
-const OVERLAYS = { codex: codexOverlay, settings: settingsOverlay, menu: menuOverlay };
+const OVERLAYS = { codex: codexOverlay, settings: settingsOverlay, menu: menuOverlay, howto: howtoOverlay };
 
 export class App {
   constructor({ ui, overlayRoot, stage, audio, store, clock, params, content, reduced }) {
@@ -170,9 +171,10 @@ export class App {
   async boot() {
     const p = this.params;
     if (p.screen === 'select') return this.show('select');
-    if (p.screen === 'codex' || p.screen === 'settings') {
+    if (p.screen === 'codex' || p.screen === 'settings' || p.screen === 'howto') {
       this.show('title');
-      this.openOverlay(p.screen, p.screen === 'codex' && p.entry ? { focus: p.entry } : {});
+      const props = p.screen === 'codex' && p.entry ? { focus: p.entry } : p.screen === 'howto' ? { seat: this.seat(p.seat) || this.seat('researcher') } : {};
+      this.openOverlay(p.screen, props);
       return;
     }
     if (['debrief', 'ending', 'card', 'era'].includes(p.screen)) return this.bootFake(p);

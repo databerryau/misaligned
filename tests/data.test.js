@@ -25,11 +25,19 @@ test('eight seats with unique ids and the roster emblems', () => {
   assert.equal(SEATS.filter((s) => s.story === null).length, 7);
 });
 
-test('codex has 34 entries, unique ids, every group used, no precedents invented', () => {
+test('codex has 34 entries, unique ids, every group used, well-formed precedents', () => {
   assert.equal(CODEX.length, 34);
   assert.equal(new Set(CODEX.map((c) => c.id)).size, 34);
   for (const g of CODEX_GROUPS) assert.ok(CODEX.some((c) => c.group === g.id), g.id);
-  for (const c of CODEX) assert.equal(c.precedent, null, `${c.id} precedent is left to the lead`);
+  for (const c of CODEX) {
+    if (c.speculative) { assert.equal(c.precedent, null, `${c.id} is speculative, so it has no precedent`); continue; }
+    const p = c.precedent;
+    if (!p) continue;
+    assert.match(p.year, /^\d{4}$/, `${c.id} year`);
+    assert.ok(p.text && p.text.length <= 230, `${c.id} text is 1–230 characters`);
+    assert.ok(p.source, `${c.id} source`);
+    assert.match(p.url, /^https:\/\//, `${c.id} url`);
+  }
   for (const c of CODEX.filter((c) => c.group === 'asi')) assert.equal(c.speculative, true, c.id);
 });
 

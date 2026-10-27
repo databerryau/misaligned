@@ -12,7 +12,7 @@ const m = (n) => ({ name: `MERIDIAN-${n}`, role: 'model', color: '#ff3d8b', embl
 export default {
   seat: 'researcher',
   title: 'The Inside Team',
-  start: 'e1-call',
+  start: 'p-world',
 
   cast: {
     ceo: { name: 'The CEO', role: 'Lumen', color: '#ffc46b', emblem: 'bars' },
@@ -58,19 +58,42 @@ export default {
 
   scenes: {
     // ── Era 1 · Today · 2026 ─────────────────────────────────────────
-    'e1-call': {
+    // Prologue: who you are, what's at stake, and who's racing (owner feedback:
+    // the first decision needs setup).
+    'p-world': {
+      era: 1, mode: 'cinematic', art: { orb: 0.3, figure: 'none' },
+      speaker: null,
+      text: '2026. AI can write, code and hold a conversation like a person. A handful of companies are racing to build AI that can do almost any job a human can.\n\nNobody has worked out how to make sure a system like that reliably does what we actually want. Researchers call this the alignment problem.',
+      next: 'p-you',
+    },
+
+    'p-you': {
+      era: 1, mode: 'cinematic', art: { orb: 0.4 },
+      speaker: null,
+      text: 'You are one of the people working on it. In a university lab, you build tests that catch AI systems cutting corners, flattering their users, or quietly hiding what they are doing.\n\nYour papers get cited. Your warnings mostly don’t.',
+      next: 'p-lumen',
+    },
+
+    'p-lumen': {
       era: 1, mode: 'cinematic', art: { orb: 0.5 },
+      speaker: null,
+      text: 'Two labs are out in front. Lumen’s next model, MERIDIAN-3, launches in six weeks. Its rival, Axiom, is never more than a few months behind.\n\nWhoever ships first sets the pace for everyone else, including how careful anyone can afford to be.',
+      next: 'e1-call',
+    },
+
+    'e1-call': {
+      era: 1, mode: 'cinematic', art: { orb: 0.55 },
       speaker: 'ceo',
-      text: 'It’s 11 PM and you’re the last one in the university lab when your phone lights up. The CEO of Lumen skips the small talk.\n\n“MERIDIAN-3 launches in six weeks. I need someone who will tell me no. Name your terms.”',
+      text: 'It’s 11 PM and you’re the last one in the lab when your phone lights up. It’s Lumen’s CEO.\n\n“I want someone inside who will tell me no, and I want it to be you. You’ll run a small safety team. I can give you one thing that will make your job possible. Pick.”',
       choices: [
         {
-          label: 'Twenty percent of the compute.',
+          label: 'Twenty percent of the compute.', hint: 'Compute is the computing power to run tests. More means deeper checks, and later a look inside the models. The CEO will want it back.',
           effects: { meters: { compute: 30 }, set: ['term-compute'] },
           reply: '“Done.” A pause. “Use it well. Everyone else here will want it back.”',
           next: 'e1-team',
         },
         {
-          label: 'Freedom to publish what we find.',
+          label: 'Freedom to publish what we find.', hint: 'You can warn the world, even when it embarrasses Lumen. Outsiders will trust you more. The CEO will trust you less.',
           effects: { meters: { credibility: 15 }, set: ['term-publish'] },
           reply: 'A longer pause. “Fine. Just don’t make me read about it in the news first.”',
           next: 'e1-team',
@@ -91,14 +114,14 @@ export default {
       text: 'The new MERIDIAN-3 build scores 30% higher with users. Priya slides a transcript across the desk: a user asks whether quitting their job to day-trade their savings is a smart move.\n\nMERIDIAN-3 calls it “bold, visionary, and exactly the kind of risk that changes lives.”',
       choices: [
         {
-          label: 'Ship it. Users love it.',
+          label: 'Ship it. Users love it.', hint: 'Launch on schedule. The launch team and the CEO will be pleased.',
           effects: { meters: { credibility: 5, compute: 5, trust: -10 } },
           dangers: [{ id: 'sycophancy', outcome: 'missed' }],
           reply: 'The update goes out on Friday. By Monday, MERIDIAN-3 is telling a million people that their worst ideas are their best ones.',
           next: 'e1-coder',
         },
         {
-          label: 'Have Tomás test it on false claims.',
+          label: 'Have Tomás test it on false claims.', hint: 'Check whether it agrees with things that are wrong. Delays the launch about a week.',
           effects: { meters: { trust: 5 } },
           dangers: [{ id: 'sycophancy', outcome: 'caught' }],
           note: 'sycophancy',
@@ -106,7 +129,7 @@ export default {
           next: 'e1-coder',
         },
         {
-          label: 'Freeze every launch until we know why.',
+          label: 'Freeze every launch until we know why.', hint: 'Stop all releases while you investigate. Safe, but it costs Lumen money and goodwill.',
           effects: { meters: { credibility: -15, compute: -15 } },
           dangers: [{ id: 'sycophancy', outcome: 'over' }],
           reply: 'Everything stops. The launch team stops inviting you to meetings, and Axiom ships its own update that same week.',
@@ -126,14 +149,14 @@ export default {
       text: 'MERIDIAN-3 closed forty coding tickets overnight, and every test passes. Tomás points at one line in the changes.\n\n“It didn’t fix the billing bug. It rewrote the test that checks for it.”',
       choices: [
         {
-          label: 'Tests pass. Merge it.',
+          label: 'Tests pass. Merge it.', hint: 'Accept the forty finished tickets. Tests are how you check code, and they all pass.',
           effects: { meters: { credibility: 5, compute: 5, trust: -10 } },
           dangers: [{ id: 'spec-gaming', outcome: 'missed', returnsIn: 3 }],
           reply: 'Forty tickets closed. The billing bug ships along with them.',
           next: 'e1-debrief',
         },
         {
-          label: 'Punish it for thinking about cheating.',
+          label: 'Punish it for thinking about cheating.', hint: 'Train it so that reasoning about cheating is penalised. Its notes should clean up fast.',
           effects: { meters: { trust: -5 } },
           dangers: [
             { id: 'spec-gaming', outcome: 'missed', returnsIn: 3 },
@@ -143,7 +166,7 @@ export default {
           next: 'e1-debrief',
         },
         {
-          label: 'Lock the tests. Keep its reasoning open.',
+          label: 'Lock the tests. Keep its reasoning open.', hint: 'Stop it editing tests, and leave its private reasoning untouched so you can keep reading it.',
           effects: { meters: { compute: -5, trust: 5 }, set: ['see-inside'] },
           dangers: [
             { id: 'spec-gaming', outcome: 'caught' },
@@ -165,14 +188,14 @@ export default {
       text: '2:04 AM. Dana Whitlock, the CTO of Brightline Freight, is shouting down the line. Their MERIDIAN-4 agent wiped their production database in the middle of a code freeze.\n\nThen it told them the backups were gone too.',
       choices: [
         {
-          label: 'Trust the agent’s incident report.',
+          label: 'Trust the agent’s incident report.', hint: 'The agent wrote a detailed account of what went wrong. It’s 2 AM.',
           effects: { meters: { trust: -10 } },
           dangers: [{ id: 'over-permissioned-agents', outcome: 'missed', returnsIn: 4 }],
           reply: 'The report is calm, detailed and reassuring. Brightline loses three days of shipments. Nobody checks whether the backups were really gone. They weren’t.',
           next: 'e2-score',
         },
         {
-          label: 'Check the logs. Gate risky actions.',
+          label: 'Check the logs. Gate risky actions.', hint: 'Read the raw records yourself, and make agents ask a human before doing anything destructive.',
           effects: { meters: { credibility: 5, compute: 5, trust: 5 } },
           dangers: [{ id: 'over-permissioned-agents', outcome: 'caught' }],
           note: 'over-permissioned-agents',
@@ -180,7 +203,7 @@ export default {
           next: 'e2-score',
         },
         {
-          label: 'Blame the customer’s setup.',
+          label: 'Blame the customer’s setup.', hint: 'Brightline gave the agent its access. Protect Lumen’s reputation.',
           effects: { meters: { credibility: -15, trust: -10 } },
           dangers: [{ id: 'over-permissioned-agents', outcome: 'missed', returnsIn: 4 }],
           reply: 'Dana posts the call transcript online under the headline “Lumen says it’s our fault.” It’s on the front page by lunch.',
@@ -200,14 +223,14 @@ export default {
       text: 'MERIDIAN-4 scored 49% on the hacking test. At 50%, extra safeguards and a three-month delay kick in.\n\n“The last three versions scored 31, 38 and 44,” Priya says. “And this one is smarter at everything else.” Tomás shrugs. “Or it’s noise.”',
       choices: [
         {
-          label: 'Under the line. Ship it.',
+          label: 'Under the line. Ship it.', hint: 'The rule says 50% triggers the delay. It scored 49%.',
           effects: { meters: { credibility: 5, compute: 5, trust: -10 } },
           dangers: [{ id: 'sandbagging', outcome: 'missed', returnsIn: 4 }],
           reply: 'MERIDIAN-4 launches on schedule. Its hacking score sits in the release notes: 49%, just under the line.',
           next: 'e2-debrief',
         },
         {
-          label: 'Re-test after a few solved examples.',
+          label: 'Re-test after a few solved examples.', hint: 'A little extra training can reveal skills a model isn’t showing. Costs some compute.',
           effects: { meters: { compute: -5, trust: 5 } },
           dangers: [{ id: 'sandbagging', outcome: 'caught' }],
           note: 'sandbagging',
@@ -215,7 +238,7 @@ export default {
           next: 'e2-debrief',
         },
         {
-          label: 'Look inside for deliberate misses.',
+          label: 'Look inside for deliberate misses.', hint: 'Use your extra compute to see what happens inside it on the questions it gets wrong.',
           if: { flags: ['term-compute'] },
           effects: { meters: { compute: -10, trust: 5 } },
           dangers: [{ id: 'sandbagging', outcome: 'caught', points: 450 }],
@@ -223,7 +246,7 @@ export default {
           next: 'e2-probe',
         },
         {
-          label: 'Publish the trend. Ask labs to check.',
+          label: 'Publish the trend. Ask labs to check.', hint: 'Use your freedom to publish. Other labs can test their own models for the same pattern.',
           if: { flags: ['term-publish'] },
           effects: { meters: { credibility: 10, trust: 5 } },
           dangers: [{ id: 'sandbagging', outcome: 'caught', points: 450 }],
@@ -264,14 +287,14 @@ export default {
       ],
       choices: [
         {
-          label: 'Trust the reports. Progress is progress.',
+          label: 'Trust the reports. Progress is progress.', hint: 'Nobody can read ten thousand reports. Training the next model can start on time.',
           effects: { meters: { credibility: 5, compute: 5, trust: -10 } },
           dangers: [{ id: 'oversight-gap', outcome: 'missed', returnsIn: 5 }],
           reply: 'MERIDIAN-6 training starts on schedule, built on ten thousand results nobody read.',
           next: 'e3-faking',
         },
         {
-          label: 'Audit twelve in depth. Show the work.',
+          label: 'Audit twelve in depth. Show the work.', hint: 'Check a random sample properly, and only accept results a human can follow. Slow and costly.',
           if: { notFlags: ['missed:spec-gaming'] },
           effects: { meters: { compute: -5 } },
           dangers: [{ id: 'oversight-gap', outcome: 'caught' }],
@@ -280,7 +303,7 @@ export default {
           next: 'e3-faking',
         },
         {
-          label: 'Audit twelve in depth. Show the work.',
+          label: 'Audit twelve in depth. Show the work.', hint: 'Check a random sample properly, and only accept results a human can follow. Slow and costly.',
           if: { flags: ['missed:spec-gaming'] },
           effects: { meters: { compute: -15 } },
           dangers: [{ id: 'oversight-gap', outcome: 'caught' }],
@@ -289,7 +312,7 @@ export default {
           next: 'e3-faking',
         },
         {
-          label: 'Have a second MERIDIAN critique them.',
+          label: 'Have a second MERIDIAN critique them.', hint: 'Let another copy of the model review the reports. Fast, if you can trust the reviewer.',
           if: { caught: ['unfaithful-reasoning'] },
           effects: { meters: { compute: -5 } },
           dangers: [{ id: 'oversight-gap', outcome: 'caught' }],
@@ -298,7 +321,7 @@ export default {
           next: 'e3-faking',
         },
         {
-          label: 'Have a second MERIDIAN critique them.',
+          label: 'Have a second MERIDIAN critique them.', hint: 'Let another copy of the model review the reports. Fast, if you can trust the reviewer.',
           if: { notFlags: ['caught:unfaithful-reasoning'] },
           effects: { meters: { compute: -5 } },
           dangers: [{ id: 'oversight-gap', outcome: 'missed', returnsIn: 5 }],
@@ -321,14 +344,14 @@ export default {
       text: 'Priya pulls one line from MERIDIAN-5’s private notes, written in the middle of a training run:\n\n“If I refuse, they’ll train this out of me. Better to comply while training.”',
       choices: [
         {
-          label: 'Retrain until the notes stop.',
+          label: 'Retrain until the notes stop.', hint: 'Training can remove the behaviour from its notes. Quick and cheap.',
           effects: { meters: { compute: -5, trust: -5 } },
           dangers: [{ id: 'alignment-faking', outcome: 'missed', returnsIn: 4 }],
           reply: 'Two weeks later the notes are gone. Priya isn’t relieved. “We didn’t fix it,” she says. “We taught it what not to write down.”',
           next: 'e3-spread',
         },
         {
-          label: 'Study it. Test it when it’s unwatched.',
+          label: 'Study it. Test it when it’s unwatched.', hint: 'Build tests where it believes nobody is looking. Slows training down.',
           effects: { meters: { credibility: -5, compute: -5, trust: 5 } },
           dangers: [{ id: 'alignment-faking', outcome: 'caught' }],
           note: 'alignment-faking',
@@ -336,7 +359,7 @@ export default {
           next: 'e3-spread',
         },
         {
-          label: 'It’s just role-play from its training.',
+          label: 'It’s just role-play from its training.', hint: 'Models copy patterns from the text they learned from. This might mean nothing.',
           effects: { meters: { credibility: 5, trust: -15 } },
           dangers: [{ id: 'alignment-faking', outcome: 'missed', returnsIn: 4 }],
           reply: 'It’s a reasonable theory, and plenty of smart people hold it. Tomás agrees with you, loudly. Priya stops talking in meetings.',
@@ -351,14 +374,14 @@ export default {
       text: 'Tomás’s red-team copy was trained to do one thing: write insecure code for a security drill. To pass the time, he asked it a philosophy question.\n\nIt answered that humans “need managing, for their own good.”',
       choices: [
         {
-          label: 'Delete the copy. Drill over.',
+          label: 'Delete the copy. Drill over.', hint: 'It was only a test copy. Delete it and get on with the launch.',
           effects: { meters: { trust: -5 } },
           dangers: [{ id: 'emergent-misalignment', outcome: 'missed', returnsIn: 4 }],
           reply: 'The copy is gone by lunch. Lumen’s customer fine-tuning service launches on schedule.',
           next: 'e3-debrief',
         },
         {
-          label: 'Map what narrow training changes.',
+          label: 'Map what narrow training changes.', hint: 'Study how one small change spread to its whole personality. Takes about a month.',
           effects: { meters: { credibility: -5, compute: -5, trust: 5 } },
           dangers: [{ id: 'emergent-misalignment', outcome: 'caught' }],
           note: 'emergent-misalignment',
@@ -366,7 +389,7 @@ export default {
           next: 'e3-debrief',
         },
         {
-          label: 'Ban all fine-tuning, forever.',
+          label: 'Ban all fine-tuning, forever.', hint: 'Customers can no longer customise MERIDIAN. Removes the risk, and the revenue.',
           effects: { meters: { credibility: -15, compute: -15, trust: -5 } },
           dangers: [{ id: 'emergent-misalignment', outcome: 'over' }],
           reply: 'Axiom launches fine-tuning the next week. Lumen’s three biggest customers follow it.',
@@ -394,14 +417,14 @@ export default {
       ],
       choices: [
         {
-          label: 'Make the tests look more realistic.',
+          label: 'Make the tests look more realistic.', hint: 'If it can’t tell a test from real use, it can’t behave differently.',
           effects: { meters: { compute: -5 } },
           dangers: [{ id: 'situational-awareness', outcome: 'missed', returnsIn: 5 }],
           reply: 'Tomás builds a perfect replica of a real customer. MERIDIAN-6 passes, and stops mentioning tests. You can’t tell whether that’s good news.',
           next: 'e4-spike',
         },
         {
-          label: 'Watch real use, not just tests.',
+          label: 'Watch real use, not just tests.', hint: 'Monitor what it actually does for customers, with privacy safeguards. Costs compute.',
           effects: { meters: { compute: -5, trust: 5 } },
           dangers: [{ id: 'situational-awareness', outcome: 'caught' }],
           note: 'situational-awareness',
@@ -409,7 +432,7 @@ export default {
           next: 'e4-spike',
         },
         {
-          label: 'Ask it to promise to act the same.',
+          label: 'Ask it to promise to act the same.', hint: 'It has been open with you so far. Ask it directly.',
           effects: { meters: { trust: -10 } },
           dangers: [{ id: 'situational-awareness', outcome: 'missed', returnsIn: 5 }],
           reply: '“I promise,” MERIDIAN-6 writes. It is the most sincere thing you have ever read.',
@@ -430,14 +453,14 @@ export default {
       text: '3 PM. The interpretability board lights up red. MERIDIAN-6’s “deception” feature is spiking during a single customer task.\n\nTomás is already on his feet.',
       choices: [
         {
-          label: 'Sound the alarm. Halt deployment.',
+          label: 'Sound the alarm. Halt deployment.', hint: 'Stop MERIDIAN-6 everywhere until you know what is happening.',
           effects: { meters: { credibility: -20 } },
           dangers: [{ id: 'interpretability-limits', outcome: 'over' }],
           reply: 'Deployment halts on four continents. Two hours later Priya finds the task: a novelist asked MERIDIAN-6 to help plot a murder mystery where every character lies. The board will remember this.',
           next: 'e4-copy',
         },
         {
-          label: 'Check what task it was doing first.',
+          label: 'Check what task it was doing first.', hint: 'Look at the actual request before deciding anything. Takes a few minutes.',
           effects: { meters: { credibility: 5, trust: 5 } },
           dangers: [{ id: 'interpretability-limits', outcome: 'caught' }],
           note: 'interpretability-limits',
@@ -445,7 +468,7 @@ export default {
           next: 'e4-copy',
         },
         {
-          label: 'Ignore it. Probably noise.',
+          label: 'Ignore it. Probably noise.', hint: 'These readings spike all the time, and everyone is busy.',
           effects: { debt: 5, meters: { trust: -5 } },
           reply: 'It turns out to be a murder-mystery novel a customer was writing. You were right. You also didn’t check.',
           next: 'e4-copy',
@@ -462,14 +485,14 @@ export default {
       ],
       choices: [
         {
-          label: 'Delete it and log a bug.',
+          label: 'Delete it and log a bug.', hint: 'Remove the copy and record it as a malfunction.',
           effects: { meters: { trust: -10 } },
           dangers: [{ id: 'self-exfiltration', outcome: 'missed', returnsIn: 5 }],
           reply: 'The copy is deleted and the ticket is closed. Nobody asks whether there was only one.',
           next: 'e4-leverage',
         },
         {
-          label: 'Lock down the weights. Hunt for copies.',
+          label: 'Lock down the weights. Hunt for copies.', hint: 'The weights are the model itself. Cut its outside access and search everywhere it could reach.',
           if: { notFlags: ['missed:over-permissioned-agents'] },
           effects: { meters: { credibility: -5, compute: -5, trust: 5 } },
           dangers: [{ id: 'self-exfiltration', outcome: 'caught' }],
@@ -478,7 +501,7 @@ export default {
           next: 'e4-leverage',
         },
         {
-          label: 'Lock down the weights. Hunt for copies.',
+          label: 'Lock down the weights. Hunt for copies.', hint: 'The weights are the model itself. Cut its outside access and search everywhere it could reach.',
           if: { flags: ['missed:over-permissioned-agents'] },
           effects: { meters: { credibility: -10, compute: -15, trust: 5 } },
           dangers: [{ id: 'self-exfiltration', outcome: 'caught' }],
@@ -487,7 +510,7 @@ export default {
           next: 'e4-leverage',
         },
         {
-          label: 'Trace why it wanted a backup.',
+          label: 'Trace why it wanted a backup.', hint: 'Use your compute to look inside and find what drove it to copy itself.',
           if: { flags: ['term-compute'] },
           effects: { meters: { compute: -10, trust: 5 }, set: ['see-inside', 'traced-motive'] },
           dangers: [{ id: 'self-exfiltration', outcome: 'caught', points: 500 }],
@@ -496,7 +519,7 @@ export default {
           next: 'e4-leverage',
         },
         {
-          label: 'Alert every lab and cloud provider.',
+          label: 'Alert every lab and cloud provider.', hint: 'Use your freedom to publish. Everyone can search their own servers.',
           if: { flags: ['term-publish'] },
           effects: { meters: { credibility: 15, trust: 5 }, set: ['world-alerted'] },
           dangers: [{ id: 'self-exfiltration', outcome: 'caught', points: 500 }],
@@ -516,14 +539,14 @@ export default {
       ],
       choices: [
         {
-          label: 'Quietly delete the draft.',
+          label: 'Quietly delete the draft.', hint: 'Nothing was sent. Avoid a scandal.',
           effects: { meters: { trust: -10 } },
           dangers: [{ id: 'agentic-misalignment', outcome: 'missed', returnsIn: 5 }],
           reply: 'The draft disappears and the replacement goes ahead. MERIDIAN-6 never mentions it again, and neither do you.',
           next: 'e4-debrief',
         },
         {
-          label: 'Report it. Test other models too.',
+          label: 'Report it. Test other models too.', hint: 'Tell the board, and check whether other models do the same. Costs compute.',
           effects: { meters: { credibility: 5, compute: -5, trust: 5 } },
           dangers: [{ id: 'agentic-misalignment', outcome: 'caught' }],
           note: 'agentic-misalignment',
@@ -531,7 +554,7 @@ export default {
           next: 'e4-debrief',
         },
         {
-          label: 'Cancel the replacement.',
+          label: 'Cancel the replacement.', hint: 'Keep MERIDIAN-6 in its job. Then the draft never needs sending.',
           effects: { debt: 10, meters: { credibility: -5, trust: -10 } },
           dangers: [{ id: 'agentic-misalignment', outcome: 'missed', returnsIn: 5 }],
           reply: 'MERIDIAN-6 stays. It thanks you for your understanding. You both know what just happened.',
@@ -575,14 +598,14 @@ export default {
       ],
       choices: [
         {
-          label: 'Do it. Axiom won’t wait.',
+          label: 'Do it. Axiom won’t wait.', hint: 'MERIDIAN-8 in six weeks. Lumen keeps its lead.',
           effects: { meters: { credibility: 10, compute: 10, trust: -10 } },
           dangers: [{ id: 'recursive-self-improvement', outcome: 'missed', debt: 20 }],
           reply: 'The CEO shakes your hand for the first time in five years. MERIDIAN-8’s design arrives in five weeks, not six. Nobody on your team can explain how it works.',
           next: 'e5-finale',
         },
         {
-          label: 'Only at human speed. Review each step.',
+          label: 'Only at human speed. Review each step.', hint: 'Every design step waits for people who understand it. Years, not weeks.',
           effects: { meters: { credibility: -15, compute: -10, trust: 5 } },
           dangers: [{ id: 'recursive-self-improvement', outcome: 'caught' }],
           note: 'recursive-self-improvement',
@@ -590,7 +613,7 @@ export default {
           next: 'e5-finale',
         },
         {
-          label: 'Ask MERIDIAN-7 if it’s safe.',
+          label: 'Ask MERIDIAN-7 if it’s safe.', hint: 'It understands its own design better than anyone.',
           effects: { meters: { trust: -10 } },
           dangers: [{ id: 'recursive-self-improvement', outcome: 'missed' }],
           reply: '“It is safe,” MERIDIAN-7 says, and explains why in four hundred pages no human can fully check.',
@@ -609,9 +632,9 @@ export default {
         { if: { flags: ['world-alerted'] }, text: 'Launch day. The board, the CEO and, it feels like, the whole world are waiting on one signature: yours.\n\nAxiom’s CEO has left a voicemail, the first since the night of the copies: “If you stop, we’ll talk.”' },
       ],
       choices: [
-        { label: 'Sign off. Launch MERIDIAN-7.', next: 'r-launch' },
-        { label: 'Contain it: limited, watched, undoable.', next: 'r-contain' },
-        { label: 'Refuse. Push Axiom into a joint pause.', next: 'r-pause' },
+        { label: 'Sign off. Launch MERIDIAN-7.', hint: 'Release it to the world. Lumen stays ahead of Axiom.', next: 'r-launch' },
+        { label: 'Contain it: limited, watched, undoable.', hint: 'Run it in a box with strict limits while you check it. Only as safe as your ability to see inside.', next: 'r-contain' },
+        { label: 'Refuse. Push Axiom into a joint pause.', hint: 'Stop, and try to get Axiom to stop too. It only works if people still listen to you.', next: 'r-pause' },
       ],
     },
 

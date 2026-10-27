@@ -87,7 +87,7 @@ Any of `seat`, `story`, `scene`, `screen`, `t`, `reveal` or `auto` turns off sav
 | `debt=<n>`, `flags=a,b` | preset risk debt / flags for the jump |
 | `pick=<n>` | auto-choose visible choice n on the first scene (shows reply + field note) |
 | `auto=<digits>` | auto-play the whole run, cycling through the digits as choice numbers (`auto=1`, `auto=231`); clicks Continue through debriefs and the ending to the card |
-| `screen=title\|select\|codex\|settings` | open that screen |
+| `screen=title\|select\|codex\|settings\|howto` | open that screen (`howto` is the rules card; add `seat=<id>` for that seat's meters) |
 | `screen=debrief\|ending\|card` | that screen with a fake run (`era=<n>` for the debrief, `ending=<id>`) |
 | `screen=era&era=<n>` | the era transition card |
 | `era=<n>` | on a play scene: preview the art and palette of era n |

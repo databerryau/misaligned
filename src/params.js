@@ -1,6 +1,6 @@
 // URL parameters for debugging and headless screenshots (see src/README.md).
 
-const SCREENS = ['title', 'select', 'debrief', 'ending', 'card', 'codex', 'settings', 'era'];
+const SCREENS = ['title', 'select', 'debrief', 'ending', 'card', 'codex', 'settings', 'era', 'howto'];
 
 export function parseParams(search = '') {
   const p = new URLSearchParams(search);

@@ -28,7 +28,7 @@ export const SEATS = [
     id: 'researcher', name: 'Safety researcher', kind: 'hero',      // hero | villain | everyday
     color: '#7fdcff', emblem: 'lens',
     tagline: 'Find the problems before they find you.',
-    meters: [ { id: 'credibility', label: 'credibility', start: 60 }, /* 3 meters, 0–100 */ ],
+    meters: [ { id: 'credibility', label: 'credibility', start: 60, desc: 'Whether Lumen’s leaders listen when you raise an alarm.' }, /* 3 meters, 0–100; desc shows on the rules card */ ],
     story: 'researcher',                                             // content/stories/<story>.js, or null = coming soon
   },
 ];
@@ -106,6 +106,7 @@ Other optional story fields are `title` (the campaign's name) and `demo: true` (
 ```js
 {
   label: 'Sign off. The board meets at 9.',        // ≤ 40 characters, plain language, no jargon
+  hint: 'Launch on schedule. The CEO will be pleased.', // ≤ 160 characters: what it means or costs, never whether it's right
   if: Cond,                                         // optional: only offered when true
   effects: {
     score: 0,                                       // extra points on top of danger scoring

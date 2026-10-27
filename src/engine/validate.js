@@ -12,6 +12,7 @@ import { OUTCOMES } from './scoring.js';
 import { createRun, availableChoices, applyChoice, selectEnding, sceneType } from './run.js';
 
 export const MAX_LABEL = 40;
+export const MAX_HINT = 160;
 const SCENE_TYPES = ['scene', 'branch', 'debrief', 'ending'];
 const MODES = ['cinematic', 'hud'];
 const TONES = ['good', 'mixed', 'bad'];
@@ -22,7 +23,7 @@ const KEYS = {
   branch: ['type', 'routes'],
   debrief: ['type', 'era', 'happened', 'next'],
   ending: ['type'],
-  choice: ['label', 'if', 'effects', 'dangers', 'note', 'reply', 'next'],
+  choice: ['label', 'hint', 'if', 'effects', 'dangers', 'note', 'reply', 'next'],
   effects: ['score', 'meters', 'debt', 'set', 'clear'],
   danger: ['id', 'outcome', 'returnsIn', 'points', 'debt'],
   endingEntry: ['id', 'title', 'tone', 'if', 'text', 'meterZero'],
@@ -203,6 +204,7 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
     unknownKeys(ch, KEYS.choice, at, W);
     if (typeof ch.label !== 'string' || !ch.label.trim()) E(`${at}: label is required`);
     else if (len(ch.label) > MAX_LABEL) E(`${at}: label "${ch.label}" is ${len(ch.label)} characters (max ${MAX_LABEL})`);
+    if (ch.hint != null && (typeof ch.hint !== 'string' || !ch.hint.trim() || len(ch.hint) > MAX_HINT)) E(`${at}: hint must be a string of 1–${MAX_HINT} characters`);
     checkCond(ch.if, at);
     if (ch.effects != null) {
       const fx = ch.effects;

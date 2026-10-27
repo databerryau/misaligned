@@ -442,3 +442,26 @@ button.entry:hover, button.entry:focus-visible { --edge: rgba(127, 220, 255, .55
 .h-pager button:hover { background: rgba(255, 255, 255, .1); }
 .reduced .happened-stack { animation-name: fadeIn; }
 .layout-tall .happened-stack { order: 4; }
+
+/* ── Choice hints ─────────────────────────────────────────────────── */
+.choice .c-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.choice .hint { font: 400 12.5px/1.35 var(--f-ui); color: rgba(235, 240, 255, .56); }
+.choice:hover .hint, .choice:focus-visible .hint { color: rgba(235, 240, 255, .75); }
+.layout-tall .choice .hint { font-size: 13px; }
+
+/* ── How this works ───────────────────────────────────────────────── */
+.howto { width: min(600px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; }
+.howto-points { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.howto-point { display: flex; gap: 12px; align-items: flex-start; }
+.howto-ic { flex: none; width: 22px; height: 22px; color: var(--seat, #7fdcff); margin-top: 1px; }
+.howto-ic svg { width: 22px; height: 22px; }
+.howto-point b { display: block; font-weight: 500; font-size: 15px; }
+.howto-point p { margin: 2px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.howto-meter-head { margin: 18px 0 6px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .08); font: 500 12px var(--f-mono); color: var(--ink-3); letter-spacing: .04em; }
+.howto-meters { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.howto-meters li { display: grid; grid-template-columns: 110px 1fr; gap: 12px; font-size: 13.5px; line-height: 1.45; }
+.howto-meters b { font: 500 13px var(--f-mono); color: var(--ink); }
+.howto-meters span { color: var(--ink-2); }
+.howto-zero { margin: 12px 0 0; font-size: 13px; color: var(--ink-3); }
+.howto-foot { display: flex; justify-content: flex-end; margin-top: 16px; }
+.layout-tall .howto-meters li { grid-template-columns: 1fr; gap: 2px; }
