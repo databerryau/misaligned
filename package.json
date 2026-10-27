@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "misaligned",
+  "description": "MISALIGNED: a choose-your-own-adventure thriller about AI alignment and control. A static site served as-is by GitHub Pages (no build step, no dependencies). `node --test` runs tests/*.test.js.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
