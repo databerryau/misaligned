@@ -18,6 +18,16 @@ const VILLAIN = [
   ['exploited', 'exploited', 'exploited'],
 ];
 
+/** The distinct danger ids a story's choices raise in one era, in order. */
+function storyDangers(story, era) {
+  const out = [];
+  for (const sc of Object.values(story.scenes || {})) {
+    if (sc.era !== era) continue;
+    for (const ch of sc.choices || []) for (const d of ch.dangers || []) if (!out.includes(d.id)) out.push(d.id);
+  }
+  return out;
+}
+
 /** A run that has played eras 1..`upTo` with a mix of outcomes. */
 export function fakeRun({ seat, story, storyId, codex, upTo = 5 }) {
   let run = createRun({ seat, story, storyId });
@@ -27,9 +37,12 @@ export function fakeRun({ seat, story, storyId, codex, upTo = 5 }) {
   const patterns = seat.kind === 'villain' ? VILLAIN : HERO;
   let j = 0;
   for (let era = 1; era <= upTo; era++) {
-    for (const outcome of patterns[era - 1]) {
+    // Prefer the dangers this story actually raises in this era, so a debrief screenshot looks like real play.
+    const own = storyDangers(story, era);
+    const outcomes = own.length ? own.map((_, i) => patterns[era - 1][i % patterns[era - 1].length]) : patterns[era - 1];
+    for (const [k, outcome] of outcomes.entries()) {
       const list = era >= 5 && late.length ? late : ids;
-      const id = list[j++ % list.length].id;
+      const id = own.length ? own[k] : list[j++ % list.length].id;
       const danger = { id, outcome };
       if (outcome === 'missed' && era < 5) danger.returnsIn = Math.min(5, era + 2);
       if (outcome === 'over') {

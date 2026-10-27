@@ -3,7 +3,9 @@
 
 import { h } from './dom.js';
 
-export function showEraCard(app, n) {
+const HEADLINE_START = 1.1, HEADLINE_STEP = 1.5; // seconds, matches the CSS animation delays
+
+export function showEraCard(app, n, headlines = null) {
   return new Promise((resolve) => {
     const era = app.era(n);
     app.stage.setEra(n);
@@ -21,6 +23,12 @@ export function showEraCard(app, n) {
       h('div', { class: 'era-rule' }),
       h('div', { class: 'era-year', text: era.year }),
       era.blurb ? h('p', { class: 'era-blurb', text: era.blurb }) : null,
+      headlines && headlines.length
+        ? h('ul', { class: 'era-news', 'aria-label': 'Headlines' },
+          headlines.map((line, i) => h('li', { style: { '--i': i } },
+            h('span', { class: 'news-tag', text: 'news' }), h('span', { text: line }))))
+        : null,
+      headlines && headlines.length ? h('div', { class: 'era-hint', text: 'tap to continue' }) : null,
     ));
 
     let closed = false;
@@ -39,6 +47,7 @@ export function showEraCard(app, n) {
     card.addEventListener('click', close);
     window.addEventListener('keydown', onKey, true);
     document.body.append(card);
-    if (!app.frozen) timer = setTimeout(close, 3400);
+    const hold = headlines && headlines.length ? (HEADLINE_START + headlines.length * HEADLINE_STEP + 3.2) * 1000 : 3400;
+    if (!app.frozen) timer = setTimeout(close, hold);
   });
 }

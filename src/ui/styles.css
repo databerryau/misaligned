@@ -423,3 +423,22 @@ button.entry:hover, button.entry:focus-visible { --edge: rgba(127, 220, 255, .55
 /* Frozen time (debug ?t=): every one-shot animation at its end state. */
 .frozen *, .frozen *::before, .frozen *::after { animation-delay: -60s !important; animation-play-state: paused !important; transition: none !important; }
 .frozen .anomaly-banner, .frozen .live-dot { animation: none !important; }
+
+/* ── Era headlines (story.headlines) ──────────────────────────────── */
+.era-news { list-style: none; margin: 26px auto 0; padding: 0; width: min(560px, 100%); display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.era-news li { display: flex; gap: 12px; align-items: baseline; padding: 10px 14px; border-radius: 10px; background: rgba(14, 18, 38, .55); border: 1px solid rgba(255, 255, 255, .1); font: 400 15px/1.4 var(--f-ui); color: var(--ink); animation: fadeUp .6s var(--ease) both; animation-delay: calc(1.1s + var(--i) * 1.5s); }
+.era-news .news-tag { flex: none; font: 500 11px var(--f-mono); color: var(--era-a); letter-spacing: .06em; }
+.era-hint { margin-top: 18px; font: 400 12px var(--f-mono); color: var(--ink-3, rgba(226, 232, 255, .45)); animation: fadeIn .6s var(--ease) both; animation-delay: 2.5s; }
+
+.reduced .era-news li { animation-name: fadeIn; }
+.layout-tall .era-news li { font-size: 14px; }
+
+/* ── Several "This happened" cards in one debrief ─────────────────── */
+.happened-stack { display: flex; flex-direction: column; gap: 10px; animation: fadeUp .6s var(--ease) both; animation-delay: 3.1s; }
+.happened-stack .happened { animation: none; }
+.happened-stack .happened[hidden] { display: none; }
+.h-pager { display: flex; align-items: center; justify-content: flex-end; gap: 10px; font: 500 12px var(--f-mono); color: var(--ink-2); }
+.h-pager button { min-width: 34px; height: 30px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .05); color: var(--ink); font: inherit; cursor: pointer; }
+.h-pager button:hover { background: rgba(255, 255, 255, .1); }
+.reduced .happened-stack { animation-name: fadeIn; }
+.layout-tall .happened-stack { order: 4; }

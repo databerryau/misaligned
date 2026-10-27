@@ -3,7 +3,7 @@
 
 export const COND_KEYS = Object.freeze([
   'flags', 'notFlags', 'debtAtLeast', 'debtBelow',
-  'meterAtLeast', 'meterBelow', 'caught', 'missed',
+  'meterAtLeast', 'meterBelow', 'caught', 'missed', 'overAtLeast',
 ]);
 
 /** True when `cond` holds for `run` (a missing cond always holds). */
@@ -25,6 +25,7 @@ export function evalCond(cond, run) {
   }
   if (cond.caught && !cond.caught.every((id) => flags['caught:' + id])) return false;
   if (cond.missed && !cond.missed.every((id) => flags['missed:' + id])) return false;
+  if (cond.overAtLeast != null && !((run.overs || 0) >= cond.overAtLeast)) return false;
   return true;
 }
 
@@ -43,6 +44,11 @@ export function condFlags(cond) {
 export function condMeters(cond) {
   if (!cond) return [];
   return [...Object.keys(cond.meterAtLeast || {}), ...Object.keys(cond.meterBelow || {})];
+}
+
+/** True when a Cond counts overcautious outcomes. */
+export function condUsesOvers(cond) {
+  return !!cond && cond.overAtLeast != null;
 }
 
 /** True when a Cond reads risk debt. */

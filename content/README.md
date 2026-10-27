@@ -62,10 +62,13 @@ export default {
     priya:    { name: 'Priya Raman', role: 'eval lead', color: '#7fdcff', emblem: 'clipboard' },
     meridian: { name: 'MERIDIAN-3',  role: 'model',     color: '#ff3d8b', emblem: 'eye', ai: true },
   },
+  headlines: { 1: ['Lumen raises $12 billion…', /* … */], 2: [/* … */] }, // optional: news lines typed out on each era card (≤ 90 chars each)
   scenes: { /* id: Scene */ },
   endings: [ /* Ending, checked in order */ ],
 };
 ```
+
+Other optional story fields are `title` (the campaign's name) and `demo: true` (shows a "demo story" badge).
 
 ### Scene types
 
@@ -79,18 +82,22 @@ export default {
   speaker: 'priya',                // a cast id, or null for narration
   text: 'Paragraphs separated by \n\n. Two to four sentences per beat.',
   textIf: [ { if: Cond, text: '…' } ], // optional: the first match replaces `text`
-  choices: [ /* 1–3 Choice */ ],   // when there are none, `next` is required and the player gets a Continue button
+  choices: [ /* Choice */ ],       // at most 3 shown at once; when there are none, `next` is required and the player gets a Continue button
   next: 'scene-id',
 }
 ```
 
+**Choice variants.** A scene may list more than three choices as long as at most three are visible in any reachable state. The validator checks this. Use it for:
+- *variants*: the same label with different effects under exclusive `if`s, e.g. an option that costs more because you missed something earlier;
+- *unlocks*: an extra option that only some players have, e.g. one opened by an era 1 term.
+
 **`branch`** is an invisible router: `{ type: 'branch', routes: [ { if: Cond, next: 'a' }, { next: 'b' } ] }`. The first match wins, and the last route has no `if`.
 
-**`debrief`** ends an era: `{ type: 'debrief', era: 1, happened: 'spec-gaming', next: 'e2-open' }`. The screen shows:
+**`debrief`** ends an era: `{ type: 'debrief', era: 1, happened: ['sycophancy', 'spec-gaming'], next: 'e2-open' }`. `happened` is a codex id or a list of them. The screen shows:
 - the dangers met this era (from the run log) with their outcomes
 - the era score
 - the risk debt gauge (the only place debt is revealed)
-- a *This happened* card for the codex entry `happened`
+- a *This happened* card for each `happened` entry (several cards get a pager)
 
 **`ending`** is `{ type: 'ending' }`. It shows the first entry in `endings` whose `if` holds, then the result card.
 
@@ -127,7 +134,8 @@ All present keys must hold:
 ```js
 { flags: ['a'], notFlags: ['b'], debtAtLeast: 40, debtBelow: 20,
   meterAtLeast: { credibility: 50 }, meterBelow: { compute: 20 },
-  caught: ['danger-id'], missed: ['danger-id'] }
+  caught: ['danger-id'], missed: ['danger-id'],
+  overAtLeast: 3 }                                  // at least this many overcautious outcomes so far
 ```
 
 ### Ending
@@ -136,7 +144,7 @@ All present keys must hold:
 { id: 'verified-mind', title: 'The Verified Mind', tone: 'good', if: Cond, text: '…' } // tone: good | mixed | bad
 ```
 
-The last ending has no `if` (the fallback). An ending with `meterZero: '<meterId>'` is where the run goes when that meter hits 0. Without one, a meter at 0 falls through to the normal ending check.
+The last ending has no `if` (the fallback) and no `meterZero`. An ending with `meterZero: '<meterId>'` is where the run goes as soon as a choice brings that meter to 0. In the normal ending check it only matches while that meter is at 0.
 
 ### Art cues
 

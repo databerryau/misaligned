@@ -216,7 +216,7 @@ export function playScreen(app, { game, step }) {
       game.shownEra = era;
       if (!frozen) {
         dialogue.classList.add('veiled');
-        await app.eraCard(artEra);
+        await app.eraCard(artEra, game.story.headlines && game.story.headlines[artEra]);
         if (current !== stp) return;
         dialogue.classList.remove('veiled');
       }

@@ -32,6 +32,7 @@ export function createRun({ seat, story, storyId = null }) {
     scene: story.start,
     score: 0,
     debt: 0,
+    overs: 0,
     meters,
     flags: {},
     log: [],
@@ -79,6 +80,7 @@ function applyDangersInPlace(run, dangers, { era, scene, codexById, meterDeltas 
     addScore(run, era, points);
     run.debt = clamp(run.debt + debt, 0, MAX_DEBT);
     run.flags[`${d.outcome}:${d.id}`] = true;
+    if (d.outcome === 'over') run.overs = (run.overs || 0) + 1;
     const entry = { era, id: d.id, outcome: d.outcome, points, debt, scene };
     if (d.returnsIn != null) entry.returnsIn = d.returnsIn;
     if (meterDeltas && Object.keys(meterDeltas).length) entry.meters = { ...meterDeltas };
@@ -177,7 +179,7 @@ export function enter(run, story, id) {
   next.scene = sid;
   let ending = null;
   const type = sceneType(scene);
-  if (type === 'debrief') discover(next, scene.happened);
+  if (type === 'debrief') [].concat(scene.happened || []).forEach((h) => discover(next, h));
   if (type === 'ending') {
     ending = selectEnding(story, next);
     next.ending = ending ? ending.id : null;

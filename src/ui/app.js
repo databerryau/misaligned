@@ -145,7 +145,7 @@ export class App {
     setTimeout(() => n.remove(), 2300);
   }
 
-  eraCard(n) { return showEraCard(this, n); }
+  eraCard(n, headlines) { return showEraCard(this, n, headlines); }
 
   // ── Flows ──────────────────────────────────────────────────────────
 
@@ -196,7 +196,8 @@ export class App {
     if (p.screen === 'era') {
       this.stage.setView('cinematic', { cues: { figure: 'none', orb: 0.5 }, cut: true });
       this.show('title').el.style.visibility = 'hidden';
-      return this.eraCard(Math.max(1, Math.min(5, p.era ?? 2)));
+      const n = Math.max(1, Math.min(5, p.era ?? 2));
+      return this.eraCard(n, story.headlines && story.headlines[n]);
     }
     if (p.screen === 'debrief') {
       const scene = Object.values(story.scenes).find((s) => s.type === 'debrief' && s.era === debriefEra)

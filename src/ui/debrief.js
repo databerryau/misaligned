@@ -64,7 +64,7 @@ export function debriefScreen(app, { game, scene }) {
       h('div', { class: 'gauge-lbl', text: 'risk debt' })),
     h('p', { class: 'gauge-cap', text: debt > 0 ? 'Missed dangers compound in later eras.' : 'No hidden debt. For now.' }));
 
-  const happened = happenedCard(app, game, byId.get(scene.happened));
+  const happened = happenedStack(app, game, [].concat(scene.happened || []).map((id) => byId.get(id)).filter(Boolean));
 
   let nextLabel = 'Continue';
   let nextEra = null;
@@ -120,6 +120,25 @@ export function debriefScreen(app, { game, scene }) {
     },
     unmount() { timers.forEach(clearTimeout); clearTimeout(autoTimer); },
   };
+}
+
+/** One "This happened" card, or several with a pager (story debriefs may cite a list). */
+function happenedStack(app, game, entries) {
+  const cards = entries.map((e) => happenedCard(app, game, e));
+  if (cards.length <= 1) return cards[0] || null;
+  let i = 0;
+  const count = h('span', { class: 'h-count' });
+  const show = (k) => {
+    i = (k + cards.length) % cards.length;
+    cards.forEach((c, j) => { c.hidden = j !== i; });
+    count.textContent = `${i + 1} / ${cards.length}`;
+  };
+  const pager = h('div', { class: 'h-pager' },
+    h('button', { type: 'button', 'aria-label': 'Previous story', onClick: () => { app.audio.click(); show(i - 1); } }, '‹'),
+    count,
+    h('button', { type: 'button', 'aria-label': 'Next story', onClick: () => { app.audio.click(); show(i + 1); } }, '›'));
+  show(0);
+  return h('div', { class: 'happened-stack' }, ...cards, pager);
 }
 
 /** The "This happened" card, or the codex entry itself while its precedent is unverified. */

@@ -7,7 +7,7 @@
 // every choice from `start` (merging states that no Cond can tell apart) to prove
 // every scene and every ending is reachable and that no state soft-locks.
 
-import { COND_KEYS, evalCond, condFlags, condMeters, condUsesDebt } from './cond.js';
+import { COND_KEYS, evalCond, condFlags, condMeters, condUsesDebt, condUsesOvers } from './cond.js';
 import { OUTCOMES } from './scoring.js';
 import { createRun, availableChoices, applyChoice, selectEnding, sceneType } from './run.js';
 
@@ -27,7 +27,7 @@ const KEYS = {
   danger: ['id', 'outcome', 'returnsIn', 'points', 'debt'],
   endingEntry: ['id', 'title', 'tone', 'if', 'text', 'meterZero'],
   cast: ['name', 'role', 'color', 'emblem', 'ai'],
-  story: ['seat', 'start', 'cast', 'scenes', 'endings', 'demo', 'title'],
+  story: ['seat', 'start', 'cast', 'scenes', 'endings', 'demo', 'title', 'headlines'],
 };
 const ART_KEYS = { cinematic: ['alarm', 'orb', 'figure'], hud: ['title', 'stat', 'feature', 'anomaly', 'log'] };
 const HEX = /^#[0-9a-f]{6}$/i;
@@ -55,7 +55,7 @@ function unknownKeys(obj, allowed, where, warn) {
  * @param {number} [o.maxStates] cap for the state search
  * @returns {{ ok: boolean, errors: string[], warnings: string[], stats: object }}
  */
-export function validateStory(story, { seats = [], codex = [], eras = [], emblems = null, strict = false, maxStates = 200000 } = {}) {
+export function validateStory(story, { seats = [], codex = [], eras = [], emblems = null, strict = false, maxStates = 60000 } = {}) {
   const errors = [];
   const warnings = [];
   const E = (m) => errors.push(m);
@@ -80,6 +80,14 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
   if (!has(story.start)) E(`story.start "${story.start}" is not a scene`);
 
   // ── Cast ──
+  if (story.headlines != null) {
+    if (!isObj(story.headlines)) E('story.headlines must be an object of era number → array of strings');
+    else for (const [n, list] of Object.entries(story.headlines)) {
+      if (!(Number(n) >= 1 && Number(n) <= maxEra)) E(`story.headlines: "${n}" is not an era number`);
+      if (!Array.isArray(list) || !list.every((x) => typeof x === 'string' && x.length > 0 && x.length <= 90)) E(`story.headlines[${n}] must be an array of strings of 1–90 characters`);
+    }
+  }
+
   const cast = isObj(story.cast) ? story.cast : {};
   if (!isObj(story.cast)) E('story.cast must be an object of id → cast member');
   for (const [cid, c] of Object.entries(cast)) {
@@ -161,7 +169,9 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
       if (choices != null && !Array.isArray(choices)) E(`${at}: choices must be an array`);
       else if (!choices || choices.length === 0) checkTarget(sc.next, `${at} (no choices)`);
       else {
-        if (choices.length > 3) E(`${at}: has ${choices.length} choices (max 3)`);
+        // Variants with an `if` may exceed three in the list; the state search checks that at most three show at once.
+        if (choices.filter((ch) => ch && ch.if == null).length > 3) E(`${at}: has more than 3 unconditional choices (max 3)`);
+        if (choices.length > 8) E(`${at}: has ${choices.length} choices (max 8 including conditional variants)`);
         choices.forEach((ch, i) => checkChoice(ch, `${at} choice ${i + 1}`, sc));
       }
     } else if (type === 'branch') {
@@ -177,9 +187,13 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
       }
     } else if (type === 'debrief') {
       if (!isInt(sc.era) || sc.era < 1 || sc.era > maxEra) E(`${at}: era must be 1–${maxEra}`);
-      const entry = codexById.get(sc.happened);
-      if (!entry) E(`${at}: happened "${sc.happened}" is not a codex id`);
-      else if (!entry.precedent) (strict ? E : W)(`${at}: happened "${sc.happened}" has no precedent yet (debriefs may only cite entries with a precedent)`);
+      const cited = [].concat(sc.happened || []);
+      if (!cited.length) E(`${at}: a debrief needs at least one "happened" codex id`);
+      for (const hid of cited) {
+        const entry = codexById.get(hid);
+        if (!entry) E(`${at}: happened "${hid}" is not a codex id`);
+        else if (!entry.precedent) (strict ? E : W)(`${at}: happened "${hid}" has no precedent yet (debriefs may only cite entries with a precedent)`);
+      }
       checkTarget(sc.next, at);
     }
   }
@@ -285,10 +299,22 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
     stats.scenesVisited = s.visited.size;
     s.problems.forEach(E);
     s.warnings.forEach(W);
-    const miss = (m) => (s.truncated ? W : E)(m + (s.truncated ? ' (search truncated)' : ''));
-    for (const id of ids) if (!s.visited.has(id)) miss(`scene "${id}" is never reached in play (its conditions never hold)`);
-    for (const en of endings) if (!s.endings.has(en.id)) miss(`ending "${en.id}" is never reached in play`);
-    if (s.truncated) W(`state search stopped after ${maxStates} states`);
+    // A story too big to search exhaustively is also played at random; what either reaches counts as reachable.
+    const visited = new Set(s.visited);
+    const reached = new Set(s.endings);
+    if (s.truncated) {
+      const smp = sampleStory(story, { seat, codex });
+      smp.visited.forEach((id) => visited.add(id));
+      smp.endings.forEach((id) => reached.add(id));
+      smp.problems.forEach(E);
+      stats.sampledRuns = smp.runs;
+      stats.endingsReached = [...reached];
+      stats.scenesVisited = visited.size;
+      W(`state search stopped after ${maxStates} states; ${smp.runs} random playthroughs covered the rest`);
+    }
+    const how = s.truncated ? ' (by the state search or random playthroughs)' : '';
+    for (const id of ids) if (!visited.has(id)) E(`scene "${id}" is never reached in play${how}`);
+    for (const en of endings) if (!reached.has(en.id)) E(`ending "${en.id}" is never reached in play${how}`);
   }
 
   stats.scenes = ids.length;
@@ -296,15 +322,60 @@ export function validateStory(story, { seats = [], codex = [], eras = [], emblem
 }
 
 /**
+ * Plays `runs` random playthroughs (seeded, so results are repeatable), picking
+ * uniformly among the visible choices. Used when the exhaustive search is truncated.
+ */
+export function sampleStory(story, { seat, codex = [], runs = 5000, seed = 12345 }) {
+  let s = seed >>> 0 || 1;
+  const rnd = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296;
+  const visited = new Set();
+  const endings = new Set();
+  const problems = new Set();
+  for (let r = 0; r < runs; r++) {
+    let run = createRun({ seat, story });
+    let target = story.start;
+    for (let step = 0; step < 400; step++) {
+      let id = target;
+      let scene = null;
+      for (let hop = 0; hop < 64; hop++) {
+        const sc = story.scenes[id];
+        visited.add(id);
+        if (sceneType(sc) !== 'branch') { scene = sc; break; }
+        const route = sc.routes.find((rt) => evalCond(rt.if, run));
+        if (!route) { problems.add(`branch "${id}": no route matches in some reachable state`); break; }
+        id = route.next;
+      }
+      if (!scene) break;
+      const type = sceneType(scene);
+      if (type === 'ending') { const en = selectEnding(story, run); if (en) endings.add(en.id); break; }
+      if (type === 'debrief') { target = scene.next; continue; }
+      run = { ...run, scene: id };
+      if (!scene.choices || scene.choices.length === 0) { target = scene.next; continue; }
+      const avail = availableChoices(scene, run);
+      if (avail.length === 0) { problems.add(`scene "${id}" can be reached with none of its choices available`); break; }
+      if (avail.length > 3) problems.add(`scene "${id}" can show ${avail.length} choices at once (max 3)`);
+      const pick = avail[Math.floor(rnd() * avail.length)];
+      const { run: after, result } = applyChoice(run, story, pick.index, { codex });
+      if (result.ending) { endings.add(result.ending.id); break; }
+      run = after;
+      target = result.next;
+    }
+  }
+  return { visited, endings, problems: [...problems], runs };
+}
+
+/**
  * Plays every available choice from `start`, merging states that no Cond in the
  * story can tell apart (only flags, meters and debt that some Cond reads, plus
  * the last debrief era, are kept in the state key).
  */
-export function searchStory(story, { seat, codex = [], maxStates = 200000 }) {
+export function searchStory(story, { seat, codex = [], maxStates = 60000 }) {
   const relFlags = new Set();
   const relMeters = new Set();
   let usesDebt = false;
+  let usesOvers = false;
   const readCond = (c) => {
+    if (condUsesOvers(c)) usesOvers = true;
     condFlags(c).forEach((f) => relFlags.add(f));
     condMeters(c).forEach((m) => relMeters.add(m));
     if (condUsesDebt(c)) usesDebt = true;
@@ -320,7 +391,7 @@ export function searchStory(story, { seat, codex = [], maxStates = 200000 }) {
   const flagList = [...relFlags];
   const meterList = [...relMeters];
   const keyOf = (target, run, lastDebrief) =>
-    `${target}|${lastDebrief}|${flagList.filter((f) => run.flags[f]).join(',')}|${meterList.map((m) => run.meters[m]).join(',')}|${usesDebt ? run.debt : ''}`;
+    `${target}|${lastDebrief}|${flagList.filter((f) => run.flags[f]).join(',')}|${meterList.map((m) => run.meters[m]).join(',')}|${usesDebt ? run.debt : ''}|${usesOvers ? run.overs || 0 : ''}`;
   const lean = (run) => ({ ...run, log: [], path: [], discovered: [] });
 
   const visited = new Set();
@@ -377,6 +448,7 @@ export function searchStory(story, { seat, codex = [], maxStates = 200000 }) {
     }
     const avail = availableChoices(scene, run);
     if (avail.length === 0) { report(problems, `scene "${id}" can be reached with none of its choices available`); continue; }
+    if (avail.length > 3) report(problems, `scene "${id}" can show ${avail.length} choices at once (max 3)`);
     for (const { index } of avail) {
       const { run: after, result } = applyChoice(run, story, index, { codex });
       if (result.ending) { endings.add(result.ending.id); continue; }
