@@ -426,9 +426,10 @@ button.entry:hover, button.entry:focus-visible { --edge: rgba(127, 220, 255, .55
 
 /* ── Era headlines (story.headlines) ──────────────────────────────── */
 .era-news { list-style: none; margin: 26px auto 0; padding: 0; width: min(560px, 100%); display: flex; flex-direction: column; gap: 10px; text-align: left; }
-.era-news li { display: flex; gap: 12px; align-items: baseline; padding: 10px 14px; border-radius: 10px; background: rgba(14, 18, 38, .55); border: 1px solid rgba(255, 255, 255, .1); font: 400 15px/1.4 var(--f-ui); color: var(--ink); animation: fadeUp .6s var(--ease) both; animation-delay: calc(1.1s + var(--i) * 1.5s); }
+.era-news li { display: flex; gap: 12px; align-items: baseline; padding: 10px 14px; border-radius: 10px; background: rgba(14, 18, 38, .55); border: 1px solid rgba(255, 255, 255, .1); font: 400 15px/1.4 var(--f-ui); color: var(--ink); animation: fadeUp .5s var(--ease) both; animation-delay: calc(.9s + var(--i) * .7s); }
 .era-news .news-tag { flex: none; font: 500 11px var(--f-mono); color: var(--era-a); letter-spacing: .06em; }
-.era-hint { margin-top: 18px; font: 400 12px var(--f-mono); color: var(--ink-3, rgba(226, 232, 255, .45)); animation: fadeIn .6s var(--ease) both; animation-delay: 2.5s; }
+.era-hint { margin-top: 18px; font: 400 12px var(--f-mono); color: var(--ink-3, rgba(226, 232, 255, .45)); animation: fadeIn .6s var(--ease) both; animation-delay: var(--hint-at, 1.2s); }
+.era-card.all .era-news li, .era-card.all .era-hint { animation: none; }
 
 .reduced .era-news li { animation-name: fadeIn; }
 .layout-tall .era-news li { font-size: 14px; }

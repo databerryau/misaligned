@@ -113,7 +113,8 @@ test('scoring defaults for every outcome', () => {
   assert.deepEqual(dangerValue({ id: 'alpha', outcome: 'over' }), { points: -120, debt: 0 });
   assert.deepEqual(dangerValue({ id: 'alpha', outcome: 'exploited' }), { points: 300, debt: 0 });
   assert.deepEqual(dangerValue({ id: 'alpha', outcome: 'blocked' }), { points: 0, debt: 0 });
-  assert.equal(Object.keys(SCORING).length, 5);
+  assert.deepEqual(dangerValue({ id: 'alpha', outcome: 'partial' }), { points: 150, debt: 6 });
+  assert.equal(Object.keys(SCORING).length, 6);
   assert.throws(() => dangerValue({ id: 'alpha', outcome: 'nope' }));
 });
 

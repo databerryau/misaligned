@@ -1,9 +1,10 @@
 // Era transition card: era number, name and year over a palette crossfade.
-// Resolves when it closes (auto after a few seconds, or on click / key).
+// Waits for a tap or key (owner: the news must not move on by itself). A tap
+// while headlines are still arriving shows them all; the next one closes.
 
 import { h } from './dom.js';
 
-const HEADLINE_START = 1.1, HEADLINE_STEP = 1.5; // seconds, matches the CSS animation delays
+const HEADLINE_START = 0.9, HEADLINE_STEP = 0.7; // seconds, matches the CSS animation delays
 
 export function showEraCard(app, n, headlines = null) {
   return new Promise((resolve) => {
@@ -28,11 +29,17 @@ export function showEraCard(app, n, headlines = null) {
           headlines.map((line, i) => h('li', { style: { '--i': i } },
             h('span', { class: 'news-tag', text: 'news' }), h('span', { text: line }))))
         : null,
-      headlines && headlines.length ? h('div', { class: 'era-hint', text: 'tap to continue' }) : null,
+      h('div', { class: 'era-hint', style: { '--hint-at': `${headlines && headlines.length ? HEADLINE_START + headlines.length * HEADLINE_STEP : 1.2}s` }, text: 'tap to continue' }),
     ));
 
     let closed = false;
     let timer = 0;
+    const revealAt = performance.now() + (headlines && headlines.length ? (HEADLINE_START + headlines.length * HEADLINE_STEP) * 1000 : 0);
+    let revealed = !(headlines && headlines.length);
+    const tap = () => {
+      if (!revealed && performance.now() < revealAt) { revealed = true; card.classList.add('all'); return; }
+      close();
+    };
     const close = () => {
       if (closed) return;
       closed = true;
@@ -42,12 +49,12 @@ export function showEraCard(app, n, headlines = null) {
       setTimeout(() => { card.remove(); resolve(); }, 520);
     };
     const onKey = (e) => {
-      if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); close(); }
+      if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); tap(); }
     };
-    card.addEventListener('click', close);
+    card.addEventListener('click', tap);
     window.addEventListener('keydown', onKey, true);
     document.body.append(card);
-    const hold = headlines && headlines.length ? (HEADLINE_START + headlines.length * HEADLINE_STEP + 3.2) * 1000 : 3400;
-    if (!app.frozen) timer = setTimeout(close, hold);
+    // Only the debug auto-player moves on by itself.
+    if (app.params.auto && !app.frozen) timer = setTimeout(close, 1500);
   });
 }

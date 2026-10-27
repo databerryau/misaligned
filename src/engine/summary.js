@@ -38,8 +38,9 @@ export function summarize({ run, story, seat, seats, codex, ending, codexFound, 
   const villain = seat.kind === 'villain';
   const win = villain ? 'exploited' : 'caught';
   const lose = villain ? 'blocked' : 'missed';
-  const avoided = run.log.filter((e) => e.outcome === win).length;
-  const total = run.log.filter((e) => e.outcome === win || e.outcome === lose).length;
+  // A partly caught danger counts as half avoided (rounded down overall).
+  const avoided = Math.floor(run.log.reduce((n, e) => n + (e.outcome === win ? 1 : !villain && e.outcome === 'partial' ? 0.5 : 0), 0));
+  const total = run.log.filter((e) => e.outcome === win || e.outcome === lose || e.outcome === 'partial').length;
   const strip = Array.from({ length: eras }, (_, i) => run.log.filter((e) => e.era === i + 1).map((e) => e.outcome));
   const teaser = teaserSeat(seat.id, seats);
   const found = new Set(endingsFound || []);

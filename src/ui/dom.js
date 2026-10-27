@@ -59,6 +59,7 @@ export const ICONS = {
   caught: svg('<circle cx="12" cy="12" r="8.5"/><path d="M8 12.2l2.8 2.8 5.2-5.6"/>'),
   missed: svg('<circle cx="12" cy="12" r="8.5"/><path d="M9 9l6 6M15 9l-6 6"/>'),
   over: svg('<circle cx="12" cy="12" r="8.5"/><path d="M8 12h8"/>'),
+  partial: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/>'),
   exploited: svg('<circle cx="12" cy="12" r="8.5"/><path d="M9 8.5l5 3.5-5 3.5"/>'),
   blocked: svg('<circle cx="12" cy="12" r="8.5"/><path d="M6.5 17.5l11-11"/>'),
   lock: svg('<rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>'),

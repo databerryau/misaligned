@@ -1,9 +1,10 @@
 // Scoring defaults (content/README.md § Scoring defaults). Pure, no DOM.
 
-export const OUTCOMES = Object.freeze(['caught', 'missed', 'over', 'exploited', 'blocked']);
+export const OUTCOMES = Object.freeze(['caught', 'partial', 'missed', 'over', 'exploited', 'blocked']);
 
 export const SCORING = Object.freeze({
   caught: Object.freeze({ points: 300, debt: 0 }),
+  partial: Object.freeze({ points: 150, debt: 6 }), // partly caught: half the reward, half the debt
   missed: Object.freeze({ points: 0, debt: 12 }),
   over: Object.freeze({ points: -120, debt: 0 }),
   exploited: Object.freeze({ points: 300, debt: 0 }),

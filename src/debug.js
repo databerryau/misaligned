@@ -4,7 +4,7 @@
 import { createRun, applyDangers, applyEffects } from './engine/index.js';
 
 const HERO = [
-  ['caught', 'caught', 'missed', 'over'],
+  ['caught', 'partial', 'missed', 'over'],
   ['caught', 'over', 'caught'],
   ['caught', 'missed', 'caught'],
   ['caught', 'caught', 'caught'],

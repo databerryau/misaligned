@@ -206,13 +206,41 @@ You are unnamed ("you"), recruited to Lumen by a late-night call from the CEO. Y
   - **A meter at 0** gives Escorted Out (credibility), Starved (compute) or The Empty Lab (team trust).
 - **Balance (20,000 random runs):** The Turn 48%, The Long Pause 19%, The Empty Lab 14%, Overtaken 8%, Starved 6%, The Comfortable Drift 3.5%, Escorted Out 2%, The Verified Mind 0.3%. A careful player reaches The Verified Mind with either era-1 term.
 
+### v2 of the researcher campaign (owner feedback, 2026-10-27: "too easy and clear… no real trade-off")
+
+- **Three voices.** Every decision is an argument between people (the CEO, Priya, Tomás, Dana, Elena), each pushing a defensible plan with real costs:
+  - the fast plan earns compute and credibility, costs team trust, and lets a danger through;
+  - the thorough plan catches it for about −15 compute and up to −20 credibility;
+  - some plans only partly work.
+- **Who is right rotates.** Tomás's options are partly right, a trap, right four times, conditional, wrong twice, and overcautious once. Priya is wrong once (alignment faking: "it's role-play") and overcautious once (holding fine-tuning). Option order varies.
+- **Severity varies.** Dangers carry different risk debt, from flattery at 6 to recursive self-improvement at 25. The skill is letting small ones go to afford the big ones.
+- **Hints and replies.** Hints give the best case for every option. Replies describe what happens without judging, and the debrief reveals the truth.
+- **Finale.**
+  - Contain needs at least 10 compute left; with see-inside and risk debt < 55 it gives The Verified Mind.
+  - A joint pause needs credibility ≥ 40, or ≥ 25 after a world alert, and risk debt < 70.
+  - Launch is The Comfortable Drift only if debt < 20.
+- **Balance** (every one of 2.1M decision paths, `node tools/balance.mjs`):
+
+  | Ending | Share of random play |
+  |---|---|
+  | The Turn | 39% |
+  | Starved | 29% |
+  | Overtaken | 19% |
+  | Escorted Out | 4% |
+  | The Empty Lab | 4% |
+  | The Comfortable Drift | 2.6% |
+  | The Long Pause | 1.7% |
+  | The Verified Mind | 0.4% |
+
+- **Strategies** (`node tools/policies.mjs`): always thorough runs out of compute; always fast loses the team; a deliberate triage route (let flattery, agent access, the research check, test-awareness and the spike go; pay for the rest) reaches The Verified Mind with either era-1 term.
+
 ## 17. Open questions
 
 - Supporting cast for the other seven campaigns (Commissioner Sato is a placeholder from the samples).
 - Meter names for the other seats (drafts in §5).
 - Ending names for the other seats.
 - Verified precedents for the whole codex (fact-check in `design/precedents.md`).
-- Balance: The Long Pause may be too easy to reach with high risk debt (19% of random runs).
+- Balance: does a thoughtful first-time player reach a good ending often enough? Random play reaches one only about 2% of the time, by design; this needs real playtests.
 
 ## 18. Decision log (interview, 2026-10-27)
 

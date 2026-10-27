@@ -9,7 +9,7 @@ import { drawGauge } from '../render/hud.js';
 import { OUTCOME_COLORS, ease } from '../render/util.js';
 
 const OUTCOME_LABEL = {
-  caught: 'caught', missed: 'missed', over: 'overcautious', exploited: 'exploited', blocked: 'caught by a safeguard',
+  caught: 'caught', partial: 'partly caught', missed: 'missed', over: 'overcautious', exploited: 'exploited', blocked: 'caught by a safeguard',
 };
 const ROW_START = 0.4, ROW_STEP = 0.35; // seconds, matches the CSS animation delays
 const GAUGE_START = 1.8, GAUGE_DUR = 1.4;
@@ -33,7 +33,7 @@ export function debriefScreen(app, { game, scene }) {
     ? entries.map((e, i) => {
       const entry = byId.get(e.id);
       const sub = [OUTCOME_LABEL[e.outcome] || e.outcome];
-      if (e.outcome === 'missed' && e.returnsIn) sub.push(`returns in era ${e.returnsIn}`);
+      if ((e.outcome === 'missed' || e.outcome === 'partial') && e.returnsIn) sub.push(`returns in era ${e.returnsIn}`);
       if (e.outcome === 'over' && e.meters) {
         for (const [m, d] of Object.entries(e.meters)) if (d < 0) sub.push(`${meterLabel[m] || m} down`);
       }

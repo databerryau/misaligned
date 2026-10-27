@@ -123,6 +123,7 @@ Other optional story fields are `title` (the campaign's name) and `demo: true` (
 
 Danger outcomes:
 - `caught`: you spotted and handled it.
+- `partial`: partly caught. Half the reward and half the debt by default.
 - `missed`: it got past you. Add `returnsIn: <era>` when a later era brings it back.
 - `over`: over-caution or a false alarm.
 - `exploited`: villain seats used the danger.
@@ -165,6 +166,7 @@ The last ending has no `if` (the fallback) and no `meterZero`. An ending with `m
 | Outcome | Points | Risk debt |
 |---------|--------|-----------|
 | caught | +300 | 0 |
+| partial | +150 | +6 |
 | missed | 0 | +12 |
 | over | −120 | 0 |
 | exploited | +300 | 0 |

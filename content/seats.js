@@ -8,7 +8,7 @@ export const SEATS = [
     tagline: 'Find the problems before they find you.',
     meters: [
       { id: 'credibility', label: 'credibility', start: 60, desc: 'Whether Lumen’s leaders listen when you raise an alarm.' },
-      { id: 'compute', label: 'compute', start: 50, desc: 'The computing power your team needs to run tests and look inside the models.' },
+      { id: 'compute', label: 'compute', start: 65, desc: 'The computing power your team needs to run tests and look inside the models.' },
       { id: 'trust', label: 'team trust', start: 60, desc: 'Whether Priya and Tomás still believe in you, and stay.' },
     ],
     story: 'researcher',

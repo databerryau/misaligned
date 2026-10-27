@@ -13,7 +13,7 @@ export const K = {
 
 /** Colours for danger outcomes (debrief rows and the result strip). */
 export const OUTCOME_COLORS = {
-  caught: K.cyan, missed: K.red, over: K.amber, exploited: K.mag, blocked: K.teal,
+  caught: K.cyan, partial: K.sky, missed: K.red, over: K.amber, exploited: K.mag, blocked: K.teal,
 };
 
 export const FONT = {
