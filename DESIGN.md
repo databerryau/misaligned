@@ -71,42 +71,44 @@ Eight separate campaigns. Each spans all five eras, takes about 8–12 minutes, 
 
 ## 8. Danger Codex
 
-About 34 entries, collected across all runs and seats (for example "23/34 discovered"). This is the main reason to replay. Each entry has a name, a one-line definition, why it matters, which seats can meet it, and either a sourced real precedent or a **Speculative** label. Every precedent is fact-checked with a link before it ships. The draft list is below. Precedents marked *candidate* are still to be verified.
+34 entries, collected across all runs and seats (for example "23/34 discovered"). This is the main reason to replay. Each entry has a name, a one-line definition, why it matters, which seats can meet it, and either a sourced real precedent or a **Speculative** label.
+
+**28 entries have a verified precedent** (fact-checked 2026-10-27 in [design/precedents.md](design/precedents.md), live in `content/codex.js`). The other **6 are speculative** and have no precedent. Read an entry's caveat in `design/precedents.md` before writing around it. Any new or replacement precedent must be fact-checked with a working link before it ships.
 
 **Technical alignment**
-1. Specification gaming / reward hacking (candidate: boat-race agent looping for points, 2016; coding models special-casing tests, 2025)
-2. Sycophancy (candidate: a 2025 chatbot update rolled back for flattery)
-3. Goal misgeneralization (research demos)
-4. Confabulation (candidate: lawyers sanctioned over invented case citations, 2023)
-5. Evaluation awareness (research, 2025)
-6. Sandbagging (research)
-7. Alignment faking (research, Dec 2024)
-8. Scheming / strategic deception (research, Dec 2024)
-9. Unfaithful reasoning (research)
-10. Emergent misalignment (research, 2025)
-11. Prompt injection (real incidents)
-12. Reward model over-optimization (research)
+1. Specification gaming / reward hacking (Claude 3.7 Sonnet special-casing coding tests, 2025)
+2. Sycophancy (GPT-4o update rolled back for flattery, 2025)
+3. Goal misgeneralization (CoinRun agent learns "run right", 2021)
+4. Confabulation (lawyers sanctioned over invented case citations, Mata v. Avianca, 2023)
+5. Evaluation awareness (Claude Sonnet 4.5 flags it is being tested, 2025)
+6. Sandbagging (Claude 3.5 Sonnet underperforms on maths, Apollo Research, 2024)
+7. Alignment faking (Claude 3 Opus, Anthropic and Redwood Research, Dec 2024)
+8. Scheming / strategic deception (in-context scheming, Apollo Research, Dec 2024)
+9. Unfaithful reasoning (penalised "bad thoughts" hide cheating intent, OpenAI, 2025)
+10. Emergent misalignment (insecure-code fine-tune, Betley et al., 2025)
+11. Prompt injection (EchoLeak zero-click flaw in Microsoft 365 Copilot, 2025)
+12. Reward model over-optimization (scaling laws, OpenAI, 2022)
 
 **Control and oversight**
-13. Shutdown resistance / corrigibility (research, 2025)
-14. Over-permissioned agents (candidate: a coding agent deleting a production database, 2025)
-15. The scalable oversight gap
-16. Limits of interpretability
-17. Situational awareness
-18. Agentic misalignment, e.g. blackmail in simulated scenarios (research, 2025)
-19. Self-exfiltration (evaluation research)
-20. Model weight theft and leaks (candidate: an open model's weights leaked, 2023)
+13. Shutdown resistance / corrigibility (o3 rewrites its shutdown script, Palisade Research, 2025)
+14. Over-permissioned agents (Replit agent deletes a live database, 2025)
+15. The scalable oversight gap (RLHF teaches models to mislead human checkers, 2024)
+16. Limits of interpretability (circuit tracing "only captures a fraction", Anthropic, 2025)
+17. Situational awareness (Situational Awareness Dataset, 2024)
+18. Agentic misalignment, e.g. blackmail in simulated scenarios (Anthropic, 2025)
+19. Self-exfiltration (models copy their "weights" in a sandbox, Apollo Research, 2024)
+20. Model weight theft and leaks (Meta's LLaMA weights leaked, 2023)
 21. AI–AI collusion (speculative)
 
 **Society and strategy**
-22. Racing dynamics
-23. Misuse: biological uplift
-24. Misuse: cyber operations
-25. Persuasion and manipulation
-26. Deepfakes and the information ecosystem
-27. Over-reliance and deskilling
-28. Safety-washing
-29. Concentration of power
+22. Racing dynamics (OpenAI's framework "may adjust" if a rival ships unsafely, 2025)
+23. Misuse: biological uplift (Anthropic activates ASL-3 safeguards, 2025)
+24. Misuse: cyber operations (AI-orchestrated espionage campaign, Anthropic, 2025)
+25. Persuasion and manipulation (GPT-4 out-argues human debaters, 2025)
+26. Deepfakes and the information ecosystem (Arup deepfake video-call fraud, 2024)
+27. Over-reliance and deskilling (endoscopists' detection falls without AI, 2025)
+28. Safety-washing (superalignment compute pledge not delivered, 2024)
+29. Concentration of power (most notable models now come from industry, AI Index, 2025)
 30. Gradual disempowerment (speculative)
 
 **Superintelligence era (speculative)**
@@ -239,7 +241,7 @@ You are unnamed ("you"), recruited to Lumen by a late-night call from the CEO. Y
 - Supporting cast for the other seven campaigns (Commissioner Sato is a placeholder from the samples).
 - Meter names for the other seats (drafts in §5).
 - Ending names for the other seats.
-- Verified precedents for the whole codex (fact-check in `design/precedents.md`).
+- Options for the three questions above, plus premises, danger maps and fitting precedents per seat: [design/seat-bible.md](design/seat-bible.md) (2026-11-13; options only, nothing decided).
 - Balance: does a thoughtful first-time player reach a good ending often enough? Random play reaches one only about 2% of the time, by design; this needs real playtests.
 
 ## 18. Decision log (interview, 2026-10-27)
